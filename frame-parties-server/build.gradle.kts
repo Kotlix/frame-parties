@@ -1,5 +1,7 @@
 dependencies {
     api(project(":frame-parties-api"))
+    val frameAuthVersion: String by project
+    implementation("ru.kotlix:frame-auth-client-starter:$frameAuthVersion")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 

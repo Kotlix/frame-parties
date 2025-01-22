@@ -1,5 +1,16 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+import java.net.URI
+
+fun RepositoryHandler.kotlix(repo: String) = maven {
+    name = "GitHubPackages"
+    url = URI.create("https://maven.pkg.github.com/Kotlix/$repo")
+    credentials {
+        // picks from: .../user/.gradle/gradle.properties
+        username = System.getenv("GITHUB_ACTOR") ?: "\$GITHUB_LOGIN"
+        password = System.getenv("GITHUB_TOKEN") ?: "\$GITHUB_TOKEN"
+    }
+}
 
 plugins {
     kotlin("jvm") apply false
@@ -7,6 +18,7 @@ plugins {
     id("org.springframework.boot") apply false
     id("org.jlleitschuh.gradle.ktlint") apply false
     id("io.spring.dependency-management")
+    id("maven-publish")
 }
 
 subprojects {
@@ -16,6 +28,7 @@ subprojects {
         plugin("org.springframework.boot")
         plugin("io.spring.dependency-management")
         plugin("org.jlleitschuh.gradle.ktlint")
+        plugin("maven-publish")
     }
 
     val springBootVersion: String by project
@@ -39,6 +52,21 @@ subprojects {
     repositories {
         mavenLocal()
         mavenCentral()
+
+        kotlix("frame-auth")
+    }
+
+    publishing {
+        publications {
+            create<MavenPublication>("maven") {
+                this.groupId = groupId
+                this.artifactId = project.name
+                this.version = versionId
+            }
+        }
+        repositories {
+            kotlix("frame-parties")
+        }
     }
 }
 
