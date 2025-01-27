@@ -3,30 +3,29 @@ package ru.kotlix.frame.parties.api
 import ru.kotlix.frame.parties.api.dto.*
 import ru.kotlix.frame.parties.api.dto.entities.*
 
-typealias CommunityId = String
-typealias Id = String
+typealias CommunityId = Int
 typealias Token = String
-typealias RoleId = String
-typealias ChatId = String
-typealias ChannelId = String
-typealias VoiceChatId = String
+typealias RoleId = Int
+typealias ChatId = Int
+typealias ChannelId = Int
+typealias VoiceChatId = Int
 
 interface CommunityApi {
     fun createCommunity(request: CreateCommunityRequest) : CommunityId
 
-    fun deleteCommunity(id: String)
+    fun deleteCommunity(id: Int)
 
-    fun getCommunityInfo(id: String) : Community
+    fun getCommunityInfo(id: Int) : Community
 
     fun getAllCommunities() : List<CommunityInfoLight> // of a user
 
     fun getCommunityByName(request: GetCommunityByNameRequest) : CommunityInfoLight
 
-    fun joinCommunityById(id: String)
+    fun joinCommunityById(id: Int)
 
     fun joinCommunityByToken(token: String)
 
-    fun leaveCommunityById(id: String)
+    fun leaveCommunityById(id: Int)
 
     fun createToken(request: CreateCommunityTokenRequest) : Token
 

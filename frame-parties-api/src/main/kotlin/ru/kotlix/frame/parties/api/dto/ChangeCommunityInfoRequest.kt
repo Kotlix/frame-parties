@@ -3,13 +3,13 @@ package ru.kotlix.frame.parties.api.dto
 import ru.kotlix.frame.parties.api.dto.entities.Role
 
 data class ChangeCommunityInfoRequest(
-    val id: String,
+    val id: Int,
     val name: String,
     val desc: String,
-    val communityId: String,
-    val members: List<String>,
-    val chats: List<String>,
-    val channels: List<String>,
-    val voiceChats: List<String>,
+    val communityId: Int,
+    val members: List<Int>,
+    val chats: List<Int>,
+    val channels: List<Int>,
+    val voiceChats: List<Int>,
     val roles: List<Role>
 )

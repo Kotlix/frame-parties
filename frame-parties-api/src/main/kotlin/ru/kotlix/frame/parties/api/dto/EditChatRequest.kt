@@ -9,7 +9,7 @@ data class EditChatRequest(
         val name: String,
         val type: String,
         val number: Int,
-        val parentCatalogId: String,
-        val rolesIds: List<String>
+        val parentCatalogId: Int,
+        val rolesIds: List<Int>
     )
 }

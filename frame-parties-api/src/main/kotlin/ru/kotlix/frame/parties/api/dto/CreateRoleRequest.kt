@@ -1,7 +1,7 @@
 package ru.kotlix.frame.parties.api.dto
 
 data class CreateRoleRequest(
-    val communityId: String,
+    val communityId: Int,
     val role: Role
 ) {
     data class Role(

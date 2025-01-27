@@ -1,7 +1,7 @@
 package ru.kotlix.frame.parties.api.dto
 
 data class CreateChannelRequest(
-    val communityId: String,
+    val communityId: Int,
     val element: Channel
 ) {
     data class Channel(
@@ -9,6 +9,6 @@ data class CreateChannelRequest(
         val type: String,
         val number: Int,
         val parentCatalogId: String,
-        val rolesIds: List<String>
+        val rolesIds: List<Int>
     )
 }
