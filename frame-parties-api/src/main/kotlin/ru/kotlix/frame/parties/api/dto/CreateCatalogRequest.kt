@@ -1,14 +1,14 @@
 package ru.kotlix.frame.parties.api.dto
 
-data class CreateChatRequest(
+data class CreateCatalogRequest(
     val communityId: Int,
-    val element: Chat
+    val element: Catalog
 ) {
-    data class Chat(
+    data class Catalog(
         val name: String,
         val type: String,
         val number: Int?, // if it is assigned by server
-        val parentCatalogId: Int,
+        val parentCatalogId: Int, // -1 if root?
         val rolesIds: List<Int>
     )
 }

@@ -9,6 +9,7 @@ typealias RoleId = Int
 typealias ChatId = Int
 typealias ChannelId = Int
 typealias VoiceChatId = Int
+typealias CatalogId = Int
 
 interface CommunityApi {
     fun createCommunity(request: CreateCommunityRequest) : CommunityId
@@ -43,6 +44,8 @@ interface CommunityApi {
 
     fun createVoiceChat(request: CreateVoiceChatRequest) : VoiceChatId
 
+    fun createCatalog(request: CreateCatalogRequest) : CatalogId
+
     fun editChat(request: EditChatRequest)
 
     fun editChannel(request: EditChannelRequest)
@@ -54,6 +57,8 @@ interface CommunityApi {
     fun deleteChannel(request: DeleteChannelRequest)
 
     fun deleteVoiceChat(request: DeleteVoiceChatRequest)
+
+    fun deleteCatalog(request: DeleteCatalogRequest)
 
     fun getChatInfo(request: GetChatInfoRequest) : Chat
 

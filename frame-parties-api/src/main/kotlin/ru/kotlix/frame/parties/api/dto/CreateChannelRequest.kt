@@ -7,7 +7,7 @@ data class CreateChannelRequest(
     data class Channel(
         val name: String,
         val type: String,
-        val number: Int,
+        val number: Int?, // if it is assigned by server
         val parentCatalogId: String,
         val rolesIds: List<Int>
     )
