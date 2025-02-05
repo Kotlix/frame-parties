@@ -7,8 +7,8 @@ fun RepositoryHandler.kotlix(repo: String) = maven {
     url = URI.create("https://maven.pkg.github.com/Kotlix/$repo")
     credentials {
         // picks from: .../user/.gradle/gradle.properties
-        username = System.getenv("GITHUB_ACTOR") ?: "\$GITHUB_LOGIN"
-        password = System.getenv("GITHUB_TOKEN") ?: "\$GITHUB_TOKEN"
+        username = System.getenv("GITHUB_ACTOR") ?: findProperty("GITHUB_LOGIN") as String?
+        password = System.getenv("GITHUB_TOKEN") ?: findProperty("GITHUB_TOKEN") as String?
     }
 }
 
@@ -62,6 +62,7 @@ subprojects {
                 this.groupId = groupId
                 this.artifactId = project.name
                 this.version = versionId
+                from(components["java"])
             }
         }
         repositories {
