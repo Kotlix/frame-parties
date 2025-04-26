@@ -1,6 +1,6 @@
 package ru.kotlix.frame.parties.api.dto
 
-import ru.kotlix.frame.parties.api.dto.entities.Role
+import ru.kotlix.frame.parties.api.dto.entities.RoleDto
 
 data class ChangeCommunityInfoRequest(
     val id: Int,
@@ -11,5 +11,5 @@ data class ChangeCommunityInfoRequest(
     val chats: List<Int>,
     val channels: List<Int>,
     val voiceChats: List<Int>,
-    val roles: List<Role>
+    val roles: List<RoleDto>
 )
