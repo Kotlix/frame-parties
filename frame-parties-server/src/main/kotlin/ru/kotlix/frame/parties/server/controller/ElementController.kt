@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import ru.kotlix.frame.parties.api.dto.entities.ElementDto
+import ru.kotlix.frame.parties.api.dto.requests.element.*
 import ru.kotlix.frame.parties.api.service.ElementService
 
 @RestController
@@ -15,7 +16,7 @@ class ElementController(
     @GetMapping
     fun getAll(
         @PathVariable communityId: Long
-    ): ResponseEntity<List<ElementDto>> =
+    ): ResponseEntity<List<Long>> =
         ResponseEntity.ok(elementService.getElementsByCommunityId(communityId))
 
     @GetMapping("/{elementId}")
@@ -25,24 +26,51 @@ class ElementController(
     ): ResponseEntity<ElementDto> =
         ResponseEntity.ok(elementService.getElementById(communityId, elementId))
 
-    @PostMapping
-    fun create(
+    @PostMapping("/roles")
+    fun createRole(
         @PathVariable communityId: Long,
-        @RequestBody dto: ElementDto
-    ): ResponseEntity<ElementDto> {
-        val created = elementService.createElement(communityId, dto)
-        return ResponseEntity.ok().body(created)
-    }
+        @RequestBody request: CreateRoleElementRequest
+    ): ResponseEntity<ElementDto> =
+        ResponseEntity.ok(elementService.createRoleElement(communityId, request))
 
-    @PutMapping("/{elementId}")
-    fun update(
+    @PutMapping("/roles/{elementId}")
+    fun updateRole(
         @PathVariable communityId: Long,
         @PathVariable elementId: Long,
-        @RequestBody dto: ElementDto
+        @RequestBody request: UpdateRoleElementRequest
     ): ResponseEntity<ElementDto> =
-        ResponseEntity.ok(
-            elementService.updateElement(communityId, elementId, dto)
-        )
+        ResponseEntity.ok(elementService.updateRoleElement(communityId, elementId, request))
+
+    @PostMapping("/voice-chats")
+    fun createVoice(
+        @PathVariable communityId: Long,
+        @RequestBody request: CreateVoiceElementRequest
+    ): ResponseEntity<ElementDto> =
+        ResponseEntity.ok(elementService.createVoiceElement(communityId, request))
+
+    @PutMapping("/voice-chats/{elementId}")
+    fun updateVoice(
+        @PathVariable communityId: Long,
+        @PathVariable elementId: Long,
+        @RequestBody request: UpdateVoiceElementRequest
+    ): ResponseEntity<ElementDto> =
+        ResponseEntity.ok(elementService.updateVoiceElement(communityId, elementId, request))
+
+    @PostMapping("/text-chats")
+    fun createText(
+        @PathVariable communityId: Long,
+        @RequestBody request: CreateTextElementRequest
+    ): ResponseEntity<ElementDto> =
+        ResponseEntity.ok(elementService.createTextElement(communityId, request))
+
+    @PutMapping("/text-chats/{elementId}")
+    fun updateText(
+        @PathVariable communityId: Long,
+        @PathVariable elementId: Long,
+        @RequestBody request: UpdateTextElementRequest
+    ): ResponseEntity<ElementDto> =
+        ResponseEntity.ok(elementService.updateTextElement(communityId, elementId, request))
+
 
     @DeleteMapping("/{elementId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

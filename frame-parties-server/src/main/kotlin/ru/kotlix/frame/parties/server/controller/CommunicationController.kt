@@ -1,43 +1,56 @@
-package ru.kotlix.frame.parties.server.controller;
+package ru.kotlix.frame.parties.server.controller
 
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*;
-import ru.kotlix.frame.parties.api.dto.entities.CommunicationDto;
-import ru.kotlix.frame.parties.api.service.CommunicationService;
+import org.springframework.web.bind.annotation.*
+import ru.kotlix.frame.parties.api.dto.entities.CommunicationResponse
+import ru.kotlix.frame.parties.api.dto.requests.communication.CommunicationSendMessageRequest
+import ru.kotlix.frame.parties.api.dto.requests.communication.VoiceJoinRequest
+import ru.kotlix.frame.parties.api.service.CommunicationService
 
 @RestController
-@RequestMapping("/api/elements/{elementId}/messages")
+@RequestMapping("/api/elements/{elementId}/communication")
 class CommunicationController(
     private val communicationService: CommunicationService
 ) {
 
     @PostMapping
     fun send(
-        @PathVariable elementId: Long,
-        @RequestBody dto: CommunicationDto
-    ): ResponseEntity<CommunicationDto> {
-        val created = communicationService.sendMessage(elementId, dto)
+        @RequestBody message: CommunicationSendMessageRequest
+    ): ResponseEntity<CommunicationResponse> {
+        val created = communicationService.sendMessage(message)
         return ResponseEntity.ok().body(created)
     }
 
-    @GetMapping
-    fun getAll(@PathVariable elementId: Long): ResponseEntity<List<CommunicationDto>> =
-        ResponseEntity.ok(communicationService.getMessagesByElementId(elementId))
+    @GetMapping("/all")
+    fun getAll(@PathVariable communityID: Long,
+               @PathVariable offset: Long,
+               @PathVariable number: Long,
+    ): ResponseEntity<List<CommunicationResponse>> =
+        ResponseEntity.ok(communicationService.getMessagesByCommunityId(communityID, offset, number))
 
     @GetMapping("/{messageId}")
     fun getById(
+        @PathVariable communityId: Long,
         @PathVariable elementId: Long,
         @PathVariable messageId: Long
-    ): ResponseEntity<CommunicationDto> =
-        ResponseEntity.ok(communicationService.getMessageById(elementId, messageId))
+    ): ResponseEntity<CommunicationResponse> =
+        ResponseEntity.ok(communicationService.getMessageById(communityId, elementId, messageId))
 
-    @DeleteMapping("/{messageId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun delete(
-        @PathVariable elementId: Long,
-        @PathVariable messageId: Long
-    ) {
-        communicationService.deleteMessage(elementId, messageId)
+    @PostMapping("/join")
+    fun joinVoice(
+        @PathVariable communityId: Long,
+        @RequestBody request: VoiceJoinRequest
+    ): ResponseEntity<String> {
+        val sessionId = communicationService.joinVoiceChannel(communityId, request)
+        return ResponseEntity.ok(sessionId)
+    }
+
+    @DeleteMapping("/leave")
+    fun leaveVoice(
+        @PathVariable communityId: Long,
+        @RequestParam userId: Long
+    ): ResponseEntity<Void> {
+        communicationService.leaveVoiceChannel(communityId, userId)
+        return ResponseEntity.noContent().build()
     }
 }

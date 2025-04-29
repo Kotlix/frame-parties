@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import ru.kotlix.frame.parties.api.dto.entities.CommunityDto
 import ru.kotlix.frame.parties.api.dto.entities.MembershipDto
+import ru.kotlix.frame.parties.api.dto.oldrequests.CreateCommunityRequest
+import ru.kotlix.frame.parties.api.dto.requests.community.*
 import ru.kotlix.frame.parties.api.service.CommunityService
 
 @RestController
@@ -13,26 +15,26 @@ class CommunityController(
     private val communityService: CommunityService
 ) {
 
-    @GetMapping
-    fun getAll(): ResponseEntity<List<CommunityDto>> =
-        ResponseEntity.ok(communityService.getAllCommunities())
+    @GetMapping("/public")
+    fun getAllPublicWithFilter(
+        @RequestParam(required = false) filter: String?
+    ): ResponseEntity<List<Long>> =
+        ResponseEntity.ok(communityService.getAllPublicCommunities(filter))
+
 
     @GetMapping("/{communityId}")
     fun getById(@PathVariable communityId: Long): ResponseEntity<CommunityDto> =
         ResponseEntity.ok(communityService.getCommunityById(communityId))
 
     @PostMapping
-    fun create(@RequestBody dto: CommunityDto): ResponseEntity<CommunityDto> {
+    fun create(@RequestBody dto: CreateCommunityRequest): ResponseEntity<CommunityDto> {
         val created = communityService.createCommunity(dto)
         return ResponseEntity.ok().body(created)
     }
 
-    @PutMapping("/{communityId}")
-    fun update(
-        @PathVariable communityId: Long,
-        @RequestBody dto: CommunityDto
-    ): ResponseEntity<CommunityDto> =
-        ResponseEntity.ok(communityService.updateCommunity(communityId, dto))
+    @PutMapping("/{communityId}/chat")
+    fun update(@PathVariable communityId: Long, @RequestBody request: UpdateCommunityChatRequest): ResponseEntity<CommunityDto> =
+        ResponseEntity.ok(communityService.updateCommunity(communityId, request))
 
     @DeleteMapping("/{communityId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -40,17 +42,22 @@ class CommunityController(
         communityService.deleteCommunity(communityId)
     }
 
-    @GetMapping
+    @GetMapping("/members/{communityId}")
     fun getMembers(@PathVariable communityId: Long): ResponseEntity<List<MembershipDto>> =
         ResponseEntity.ok(communityService.getMembers(communityId))
 
-    @PostMapping("/{userId}")
+    @PostMapping("/{communityId}/{userId}")
     fun joinCommunity(
         @PathVariable communityId: Long,
         @PathVariable userId: Long
     ): ResponseEntity<Boolean> {
         communityService.joinCommunity(communityId, userId)
-        return ResponseEntity.status(HttpStatus.CREATED).build()
+        return ResponseEntity.ok().build()
+    }
+    @PostMapping("/join/token")
+    fun joinByToken(@RequestBody request: JoinByTokenRequest): ResponseEntity<Void> {
+        communityService.joinCommunityByToken(request.token, request.userId)
+        return ResponseEntity.ok().build()
     }
 
     @DeleteMapping("/{userId}")
