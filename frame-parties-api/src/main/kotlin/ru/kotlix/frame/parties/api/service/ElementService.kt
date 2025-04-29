@@ -10,8 +10,8 @@ interface ElementService {
     fun getElementById(communityId: Long, elementId: Long): ElementDto
     fun deleteElement(communityId: Long, elementId: Long)
 
-    fun createRoleElement(communityId: Long, request: CreateRoleElementRequest): ElementDto
-    fun updateRoleElement(communityId: Long, elementId: Long, request: UpdateRoleElementRequest): ElementDto
+    fun createDirectoryElement(communityId: Long, request: CreateDirectoryElementRequest): ElementDto
+    fun updateDirectoryElement(communityId: Long, elementId: Long, request: UpdateDirectoryElementRequest): ElementDto
 
     fun createVoiceElement(communityId: Long, request: CreateVoiceElementRequest): ElementDto
     fun updateVoiceElement(communityId: Long, elementId: Long, request: UpdateVoiceElementRequest): ElementDto

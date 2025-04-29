@@ -27,19 +27,19 @@ class ElementController(
         ResponseEntity.ok(elementService.getElementById(communityId, elementId))
 
     @PostMapping("/roles")
-    fun createRole(
+    fun createDirectory(
         @PathVariable communityId: Long,
-        @RequestBody request: CreateRoleElementRequest
+        @RequestBody request: CreateDirectoryElementRequest
     ): ResponseEntity<ElementDto> =
-        ResponseEntity.ok(elementService.createRoleElement(communityId, request))
+        ResponseEntity.ok(elementService.createDirectoryElement(communityId, request))
 
     @PutMapping("/roles/{elementId}")
-    fun updateRole(
+    fun updateDirectory(
         @PathVariable communityId: Long,
         @PathVariable elementId: Long,
-        @RequestBody request: UpdateRoleElementRequest
+        @RequestBody request: UpdateDirectoryElementRequest
     ): ResponseEntity<ElementDto> =
-        ResponseEntity.ok(elementService.updateRoleElement(communityId, elementId, request))
+        ResponseEntity.ok(elementService.updateDirectoryElement(communityId, elementId, request))
 
     @PostMapping("/voice-chats")
     fun createVoice(
