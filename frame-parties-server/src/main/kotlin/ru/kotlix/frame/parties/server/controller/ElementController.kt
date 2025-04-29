@@ -26,14 +26,14 @@ class ElementController(
     ): ResponseEntity<ElementDto> =
         ResponseEntity.ok(elementService.getElementById(communityId, elementId))
 
-    @PostMapping("/roles")
+    @PostMapping("/directory")
     fun createDirectory(
         @PathVariable communityId: Long,
         @RequestBody request: CreateDirectoryElementRequest
     ): ResponseEntity<ElementDto> =
         ResponseEntity.ok(elementService.createDirectoryElement(communityId, request))
 
-    @PutMapping("/roles/{elementId}")
+    @PutMapping("/directory/{elementId}")
     fun updateDirectory(
         @PathVariable communityId: Long,
         @PathVariable elementId: Long,
