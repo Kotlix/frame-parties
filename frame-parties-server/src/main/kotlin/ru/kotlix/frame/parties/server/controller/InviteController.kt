@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*
 import ru.kotlix.frame.parties.api.dto.entities.InviteDto
 import ru.kotlix.frame.parties.api.service.InviteService
 
-@Validated
 @RestController
 @RequestMapping("/api/communities/{communityId}/invites")
 class InviteController(

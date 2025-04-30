@@ -1,6 +1,6 @@
 package ru.kotlix.frame.parties.api.dto.requests.community
 
-data class CreateCommunityRequest(
+data class UpdateCommunityRequest(
     val name: String,
     val desc: String?,
     val is_public: Boolean,

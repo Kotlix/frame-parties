@@ -2,7 +2,7 @@ package ru.kotlix.frame.parties.api.dto.requests.element
 
 import ru.kotlix.frame.parties.api.dto.ElementType
 
-data class CreateDirectoryElementRequest(
+data class UpdateChatElementRequest(
     val community_id: Long,
     val name: String,
     val parent_element_id: Long?,

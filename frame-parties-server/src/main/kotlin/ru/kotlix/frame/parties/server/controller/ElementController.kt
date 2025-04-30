@@ -13,18 +13,31 @@ class ElementController(
     private val elementService: ElementService
 ) {
 
-    @GetMapping
-    fun getAll(
+    @GetMapping("/directory")
+    fun getAllDirectories(
         @PathVariable communityId: Long
     ): ResponseEntity<List<Long>> =
-        ResponseEntity.ok(elementService.getElementsByCommunityId(communityId))
+        ResponseEntity.ok(elementService.getAllDirectoriesByCommunityId(communityId))
 
-    @GetMapping("/{elementId}")
-    fun getById(
+    @GetMapping("/text-chats")
+    fun getAllChats(
+        @PathVariable communityId: Long
+    ): ResponseEntity<List<Long>> =
+        ResponseEntity.ok(elementService.getAllChatsByCommunityId(communityId))
+
+    @GetMapping("/directory/{elementId}")
+    fun getDirectoryById(
         @PathVariable communityId: Long,
         @PathVariable elementId: Long
     ): ResponseEntity<ElementDto> =
-        ResponseEntity.ok(elementService.getElementById(communityId, elementId))
+        ResponseEntity.ok(elementService.getDirectoryById(communityId, elementId))
+
+    @GetMapping("/text-chats/{elementId}")
+    fun getChatById(
+        @PathVariable communityId: Long,
+        @PathVariable elementId: Long
+    ): ResponseEntity<ElementDto> =
+        ResponseEntity.ok(elementService.getChatById(communityId, elementId))
 
     @PostMapping("/directory")
     fun createDirectory(
@@ -41,25 +54,10 @@ class ElementController(
     ): ResponseEntity<ElementDto> =
         ResponseEntity.ok(elementService.updateDirectoryElement(communityId, elementId, request))
 
-    @PostMapping("/voice-chats")
-    fun createVoice(
-        @PathVariable communityId: Long,
-        @RequestBody request: CreateVoiceElementRequest
-    ): ResponseEntity<ElementDto> =
-        ResponseEntity.ok(elementService.createVoiceElement(communityId, request))
-
-    @PutMapping("/voice-chats/{elementId}")
-    fun updateVoice(
-        @PathVariable communityId: Long,
-        @PathVariable elementId: Long,
-        @RequestBody request: UpdateVoiceElementRequest
-    ): ResponseEntity<ElementDto> =
-        ResponseEntity.ok(elementService.updateVoiceElement(communityId, elementId, request))
-
     @PostMapping("/text-chats")
     fun createText(
         @PathVariable communityId: Long,
-        @RequestBody request: CreateTextElementRequest
+        @RequestBody request: CreateChatElementRequest
     ): ResponseEntity<ElementDto> =
         ResponseEntity.ok(elementService.createTextElement(communityId, request))
 
@@ -67,17 +65,26 @@ class ElementController(
     fun updateText(
         @PathVariable communityId: Long,
         @PathVariable elementId: Long,
-        @RequestBody request: UpdateTextElementRequest
+        @RequestBody request: UpdateChatElementRequest
     ): ResponseEntity<ElementDto> =
         ResponseEntity.ok(elementService.updateTextElement(communityId, elementId, request))
 
 
-    @DeleteMapping("/{elementId}")
+    @DeleteMapping("/directory/{elementId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun delete(
+    fun deleteDirectory(
         @PathVariable communityId: Long,
         @PathVariable elementId: Long
     ) {
-        elementService.deleteElement(communityId, elementId)
+        elementService.deleteDirectory(communityId, elementId)
+    }
+
+    @DeleteMapping("/text-chats/{elementId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteChat(
+        @PathVariable communityId: Long,
+        @PathVariable elementId: Long
+    ) {
+        elementService.deleteChat(communityId, elementId)
     }
 }

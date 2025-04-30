@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import ru.kotlix.frame.parties.api.dto.entities.CommunityDto
 import ru.kotlix.frame.parties.api.dto.entities.MembershipDto
-import ru.kotlix.frame.parties.api.dto.oldrequests.CreateCommunityRequest
+import ru.kotlix.frame.parties.api.dto.requests.community.CreateCommunityRequest
 import ru.kotlix.frame.parties.api.dto.requests.community.*
 import ru.kotlix.frame.parties.api.service.CommunityService
 
@@ -26,6 +26,11 @@ class CommunityController(
     fun getById(@PathVariable communityId: Long): ResponseEntity<CommunityDto> =
         ResponseEntity.ok(communityService.getCommunityById(communityId))
 
+    @GetMapping("/{communityName}")
+    fun getByName(@PathVariable communityName: String): ResponseEntity<CommunityDto> =
+        ResponseEntity.ok(communityService.getCommunityByName(communityName))
+
+
     @PostMapping
     fun create(@RequestBody dto: CreateCommunityRequest): ResponseEntity<CommunityDto> {
         val created = communityService.createCommunity(dto)
@@ -33,7 +38,9 @@ class CommunityController(
     }
 
     @PutMapping("/{communityId}/chat")
-    fun update(@PathVariable communityId: Long, @RequestBody request: UpdateCommunityChatRequest): ResponseEntity<CommunityDto> =
+    fun update(@PathVariable communityId: Long,
+               @RequestBody request: UpdateCommunityRequest
+    ): ResponseEntity<CommunityDto> =
         ResponseEntity.ok(communityService.updateCommunity(communityId, request))
 
     @DeleteMapping("/{communityId}")
