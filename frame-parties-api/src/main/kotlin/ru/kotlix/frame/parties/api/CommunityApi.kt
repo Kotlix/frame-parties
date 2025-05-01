@@ -1,78 +1,44 @@
 package ru.kotlix.frame.parties.api
 
-import ru.kotlix.frame.parties.api.dto.*
-import ru.kotlix.frame.parties.api.dto.entities.*
-
-typealias CommunityId = Int
-typealias Token = String
-typealias RoleId = Int
-typealias ChatId = Int
-typealias ChannelId = Int
-typealias VoiceChatId = Int
-typealias CatalogId = Int
+import ru.kotlix.frame.parties.api.dto.entities.CommunityDto
+import ru.kotlix.frame.parties.api.dto.entities.InviteTokenDto
+import ru.kotlix.frame.parties.api.dto.entities.MemberDto
+import ru.kotlix.frame.parties.api.dto.requests.CreateCommunityRequest
+import ru.kotlix.frame.parties.api.dto.requests.CreateTokenRequest
+import ru.kotlix.frame.parties.api.dto.requests.FindPublicRequest
+import ru.kotlix.frame.parties.api.dto.requests.JoinByTokenRequest
+import ru.kotlix.frame.parties.api.dto.requests.UpdateCommunityRequest
 
 interface CommunityApi {
-    fun createCommunity(request: CreateCommunityRequest) : CommunityId
+    fun getById(communityId: Long): CommunityDto
 
-    fun deleteCommunity(id: Int)
+    fun create(dto: CreateCommunityRequest): CommunityDto
 
-    fun getCommunityInfo(id: Int) : Community
+    fun update(
+        communityId: Long,
+        request: UpdateCommunityRequest,
+    ): CommunityDto
 
-    fun getAllCommunities() : List<CommunityInfoLight> // of a user
+    fun delete(communityId: Long)
 
-    fun getCommunityByName(request: GetCommunityByNameRequest) : CommunityInfoLight
+    fun findAllPublicWithFilter(request: FindPublicRequest): List<CommunityDto>
 
-    fun joinCommunityById(id: Int)
+    fun getMembers(communityId: Long): List<MemberDto>
 
-    fun joinCommunityByToken(token: String)
+    fun joinCommunity(
+        communityId: Long,
+        userId: Long,
+    )
 
-    fun leaveCommunityById(id: Int)
+    fun leaveCommunity(
+        communityId: Long,
+        userId: Long,
+    )
 
-    fun createToken(request: CreateCommunityTokenRequest) : Token
+    fun createInviteToken(
+        communityId: Long,
+        request: CreateTokenRequest,
+    ): InviteTokenDto
 
-    fun changeCommunityInfo(request: ChangeCommunityInfoRequest)
-
-    fun createRole(request: CreateRoleRequest) : RoleId
-
-    fun editRole(request: EditRoleRequest)
-
-    fun assignRole(request: AssignRoleRequest)
-
-    fun createChat(request: CreateChatRequest) : ChatId
-
-    fun createChannel(request: CreateChannelRequest) : ChannelId
-
-    fun createVoiceChat(request: CreateVoiceChatRequest) : VoiceChatId
-
-    fun createCatalog(request: CreateCatalogRequest) : CatalogId
-
-    fun editChat(request: EditChatRequest)
-
-    fun editChannel(request: EditChannelRequest)
-
-    fun editVoiceChat(request: EditVoiceChatRequest)
-
-    fun deleteChat(request: DeleteChatRequest)
-
-    fun deleteChannel(request: DeleteChannelRequest)
-
-    fun deleteVoiceChat(request: DeleteVoiceChatRequest)
-
-    fun deleteCatalog(request: DeleteCatalogRequest)
-
-    fun getChatInfo(request: GetChatInfoRequest) : Chat
-
-    fun getChannelInfo(request: GetChannelInfoRequest) : Channel
-
-    fun getVoiceChatInfo(request: GetVoiceChatInfoRequest) : VoiceChat
-
-    fun getCommunityCatalog(request: GetCommunityCatalogRequest)
-
-    fun sendMessage(request: SendMessageRequest)
-
-    fun getMessages(request: GetMessagesRequest) : List<Message>
-
-    fun connectVoiceChat(request: ConnectVoiceChatRequest)
-
-    fun disconnectVoiceChat(request: DisconnectVoiceChatRequest)
+    fun joinByInviteToken(request: JoinByTokenRequest)
 }

@@ -6,8 +6,8 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
 import ru.kotlix.frame.auth.api.token.TokenDecoder
 import ru.kotlix.frame.auth.api.token.dto.UserInfo
+import ru.kotlix.frame.parties.server.mapper.toServiceUserInfo
 import ru.kotlix.frame.parties.server.service.AuthenticationService
-import ru.kotlix.frame.parties.server.service.dto.toServerUserInfo
 
 class TokenAuthenticationProvider(
     private val authenticationService: AuthenticationService,
@@ -18,7 +18,7 @@ class TokenAuthenticationProvider(
         if (!authenticationService.authenticateByToken(token)) {
             throw AccessDeniedException("Authentication failed")
         }
-        val user = tokenDecoder.getPayload(token).toServerUserInfo()
+        val user = tokenDecoder.getPayload(token).toServiceUserInfo()
         return PreAuthenticatedAuthenticationToken(user, "ROLE_USER").apply {
             isAuthenticated = true
         }
