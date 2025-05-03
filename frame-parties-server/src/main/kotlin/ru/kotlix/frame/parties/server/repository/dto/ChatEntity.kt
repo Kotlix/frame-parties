@@ -3,11 +3,11 @@ package ru.kotlix.frame.parties.server.repository.dto
 import java.time.OffsetDateTime
 
 data class ChatEntity(
-    val id: Long? = null,
-    val createdAt: OffsetDateTime,
-    val updatedAt: OffsetDateTime,
-    val communityId: Long,
-    val name: String,
-    val parentDirectoryId: Long,
-    val pos: Int
+    var id: Long? = null,
+    var createdAt: OffsetDateTime,
+    var updatedAt: OffsetDateTime,
+    var communityId: Long,
+    var name: String,
+    var parentDirectoryId: Long,
+    var pos: Int,
 )

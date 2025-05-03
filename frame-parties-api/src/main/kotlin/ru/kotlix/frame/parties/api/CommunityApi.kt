@@ -5,40 +5,63 @@ import ru.kotlix.frame.parties.api.dto.entities.InviteTokenDto
 import ru.kotlix.frame.parties.api.dto.entities.MemberDto
 import ru.kotlix.frame.parties.api.dto.requests.CreateCommunityRequest
 import ru.kotlix.frame.parties.api.dto.requests.CreateTokenRequest
-import ru.kotlix.frame.parties.api.dto.requests.FindPublicRequest
 import ru.kotlix.frame.parties.api.dto.requests.JoinByTokenRequest
 import ru.kotlix.frame.parties.api.dto.requests.UpdateCommunityRequest
 
 interface CommunityApi {
-    fun getById(communityId: Long): CommunityDto
+    fun getById(
+        initiatorId: Long,
+        communityId: Long,
+    ): CommunityDto
 
-    fun create(dto: CreateCommunityRequest): CommunityDto
+    fun create(
+        initiatorId: Long,
+        request: CreateCommunityRequest,
+    ): CommunityDto
 
     fun update(
+        initiatorId: Long,
         communityId: Long,
         request: UpdateCommunityRequest,
     ): CommunityDto
 
-    fun delete(communityId: Long)
+    fun delete(
+        initiatorId: Long,
+        communityId: Long,
+    )
 
-    fun findAllPublicWithFilter(request: FindPublicRequest): List<CommunityDto>
+    fun findAllPublicWithFilter(
+        initiatorId: Long,
+        name: String?,
+        pageOffset: Long,
+        pageCount: Long,
+    ): List<CommunityDto>
 
-    fun getMembers(communityId: Long): List<MemberDto>
+    fun findAllByUserId(initiatorId: Long): List<CommunityDto>
+
+    fun getMembers(
+        initiatorId: Long,
+        communityId: Long,
+    ): List<MemberDto>
 
     fun joinCommunity(
+        initiatorId: Long,
         communityId: Long,
-        userId: Long,
     )
 
     fun leaveCommunity(
+        initiatorId: Long,
         communityId: Long,
-        userId: Long,
     )
 
     fun createInviteToken(
+        initiatorId: Long,
         communityId: Long,
         request: CreateTokenRequest,
     ): InviteTokenDto
 
-    fun joinByInviteToken(request: JoinByTokenRequest)
+    fun joinByInviteToken(
+        initiatorId: Long,
+        request: JoinByTokenRequest,
+    )
 }

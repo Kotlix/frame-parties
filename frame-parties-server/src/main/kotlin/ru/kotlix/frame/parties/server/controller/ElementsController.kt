@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -28,18 +29,24 @@ import ru.kotlix.frame.parties.api.dto.requests.UpdateVoiceRequest
 class ElementsController() : DirectoryApi, ChatApi, VoiceApi {
     @GetMapping("/community/{communityId}/directory")
     override fun getAllDirectories(
+        @RequestHeader("Initiator-Id")
+        initiatorId: Long,
         @PathVariable("communityId")
         communityId: Long,
     ): List<DirectoryDto> = TODO()
 
     @GetMapping("/directory/{id}")
     override fun getDirectoryById(
+        @RequestHeader("Initiator-Id")
+        initiatorId: Long,
         @PathVariable("id")
         id: Long,
     ): DirectoryDto = TODO()
 
     @PostMapping("/community/{communityId}/directory")
     override fun createDirectory(
+        @RequestHeader("Initiator-Id")
+        initiatorId: Long,
         @PathVariable("communityId")
         communityId: Long,
         @RequestBody
@@ -48,6 +55,8 @@ class ElementsController() : DirectoryApi, ChatApi, VoiceApi {
 
     @PutMapping("/directory/{id}")
     override fun updateDirectory(
+        @RequestHeader("Initiator-Id")
+        initiatorId: Long,
         @PathVariable("id")
         id: Long,
         @RequestBody
@@ -56,24 +65,32 @@ class ElementsController() : DirectoryApi, ChatApi, VoiceApi {
 
     @DeleteMapping("/directory/{id}")
     override fun deleteDirectory(
+        @RequestHeader("Initiator-Id")
+        initiatorId: Long,
         @PathVariable("id")
         id: Long,
     ) = TODO()
 
     @GetMapping("/community/{communityId}/chat")
     override fun getAllChats(
+        @RequestHeader("Initiator-Id")
+        initiatorId: Long,
         @PathVariable("communityId")
         communityId: Long,
     ): List<ChatDto> = TODO()
 
     @GetMapping("/chat/{id}")
     override fun getChatById(
+        @RequestHeader("Initiator-Id")
+        initiatorId: Long,
         @PathVariable("id")
         id: Long,
     ): ChatDto = TODO()
 
     @PostMapping("/community/{communityId}/chat")
     override fun createChat(
+        @RequestHeader("Initiator-Id")
+        initiatorId: Long,
         @PathVariable("communityId")
         communityId: Long,
         @RequestBody
@@ -82,6 +99,8 @@ class ElementsController() : DirectoryApi, ChatApi, VoiceApi {
 
     @PutMapping("/chat/{id}")
     override fun updateChat(
+        @RequestHeader("Initiator-Id")
+        initiatorId: Long,
         @PathVariable("id")
         id: Long,
         @RequestBody
@@ -90,24 +109,32 @@ class ElementsController() : DirectoryApi, ChatApi, VoiceApi {
 
     @DeleteMapping("/chat/{id}")
     override fun deleteChat(
+        @RequestHeader("Initiator-Id")
+        initiatorId: Long,
         @PathVariable("id")
         id: Long,
     ) = TODO()
 
     @GetMapping("/community/{communityId}/voice")
     override fun getAllVoices(
+        @RequestHeader("Initiator-Id")
+        initiatorId: Long,
         @PathVariable("communityId")
         communityId: Long,
     ): List<VoiceDto> = TODO()
 
     @GetMapping("/voice/{id}")
     override fun getVoiceById(
+        @RequestHeader("Initiator-Id")
+        initiatorId: Long,
         @PathVariable("id")
         id: Long,
     ): VoiceDto = TODO()
 
     @PostMapping("/community/{communityId}/voice")
     override fun createVoice(
+        @RequestHeader("Initiator-Id")
+        initiatorId: Long,
         @PathVariable("communityId")
         communityId: Long,
         @RequestBody
@@ -116,6 +143,8 @@ class ElementsController() : DirectoryApi, ChatApi, VoiceApi {
 
     @PutMapping("/voice/{id}")
     override fun updateVoice(
+        @RequestHeader("Initiator-Id")
+        initiatorId: Long,
         @PathVariable("id")
         id: Long,
         @RequestBody
@@ -124,12 +153,16 @@ class ElementsController() : DirectoryApi, ChatApi, VoiceApi {
 
     @DeleteMapping("/voice/{id}")
     override fun deleteVoice(
+        @RequestHeader("Initiator-Id")
+        initiatorId: Long,
         @PathVariable("id")
         id: Long,
     ) = TODO()
 
     @PostMapping("/voice-join")
     override fun joinVoice(
+        @RequestHeader("Initiator-Id")
+        initiatorId: Long,
         @RequestParam
         id: Long,
         @RequestParam
@@ -138,6 +171,8 @@ class ElementsController() : DirectoryApi, ChatApi, VoiceApi {
 
     @PostMapping("/voice-leave")
     override fun leaveVoice(
+        @RequestHeader("Initiator-Id")
+        initiatorId: Long,
         @RequestParam
         id: Long,
         @RequestParam

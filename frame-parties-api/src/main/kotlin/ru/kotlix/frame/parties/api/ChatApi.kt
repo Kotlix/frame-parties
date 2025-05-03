@@ -5,19 +5,30 @@ import ru.kotlix.frame.parties.api.dto.requests.CreateChatRequest
 import ru.kotlix.frame.parties.api.dto.requests.UpdateChatRequest
 
 interface ChatApi {
-    fun getAllChats(communityId: Long): List<ChatDto>
+    fun getAllChats(
+        initiatorId: Long,
+        communityId: Long,
+    ): List<ChatDto>
 
-    fun getChatById(id: Long): ChatDto
+    fun getChatById(
+        initiatorId: Long,
+        id: Long,
+    ): ChatDto
 
     fun createChat(
+        initiatorId: Long,
         communityId: Long,
         request: CreateChatRequest,
     ): ChatDto
 
     fun updateChat(
+        initiatorId: Long,
         id: Long,
         request: UpdateChatRequest,
     ): ChatDto
 
-    fun deleteChat(id: Long)
+    fun deleteChat(
+        initiatorId: Long,
+        id: Long,
+    )
 }

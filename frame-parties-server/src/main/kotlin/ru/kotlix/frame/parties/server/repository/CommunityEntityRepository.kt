@@ -7,7 +7,20 @@ interface CommunityEntityRepository {
 
     fun save(entity: CommunityEntity): CommunityEntity
 
-    fun findAllPublic(pageNumber: Int, pageSize: Int): List<CommunityEntity>
+    fun update(entity: CommunityEntity): CommunityEntity
 
-    fun findAllPublicByName(name: String, pageNumber: Int, pageSize: Int): List<CommunityEntity>
+    fun findAllPublic(
+        pageNumber: Long,
+        pageSize: Long,
+    ): List<CommunityEntity>
+
+    fun findAllPublicByName(
+        name: String,
+        pageNumber: Long,
+        pageSize: Long,
+    ): List<CommunityEntity>
+
+    fun findAllByCreatorId(creatorId: Long): List<CommunityEntity>
+
+    fun findAllByUserId(userId: Long): List<CommunityEntity>
 }

@@ -7,5 +7,9 @@ interface MembershipRoleEntityRepository {
 
     fun save(entity: MembershipRoleEntity): MembershipRoleEntity
 
-    fun findAllByUserIdAndCommunityId(userId: Long, communityId: Long): List<MembershipRoleEntity>
+    fun findAllByMembershipId(membershipId: Long): List<MembershipRoleEntity>
+
+    fun remove(entity: MembershipRoleEntity)
+
+    fun removeAllByMembershipId(membershipId: Long)
 }

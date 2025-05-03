@@ -8,43 +8,43 @@ import java.time.OffsetDateTime
 
 @Repository
 class DirectoryEntityRepositoryImpl(
-    private val npJdbc: NamedParameterJdbcTemplate
+    private val npJdbc: NamedParameterJdbcTemplate,
 ) : DirectoryEntityRepository {
-
     companion object {
-        private val ROW_MAPPER = RowMapper { rs, _ ->
-            DirectoryEntity(
-                id = rs.getLong("id"),
-                createdAt = rs.getObject("created_at", OffsetDateTime::class.java),
-                updatedAt = rs.getObject("updated_at", OffsetDateTime::class.java),
-                communityId = rs.getLong("community_id"),
-                name = rs.getString("name"),
-                parentDirectoryId = rs.getLong("parent_directory_id"),
-                pos = rs.getInt("pos")
-            )
-        }
+        private val ROW_MAPPER =
+            RowMapper { rs, _ ->
+                DirectoryEntity(
+                    id = rs.getLong("id"),
+                    createdAt = rs.getObject("created_at", OffsetDateTime::class.java),
+                    updatedAt = rs.getObject("updated_at", OffsetDateTime::class.java),
+                    communityId = rs.getLong("community_id"),
+                    name = rs.getString("name"),
+                    parentDirectoryId = rs.getLong("parent_directory_id"),
+                    pos = rs.getInt("pos"),
+                )
+            }
     }
 
     override fun findById(id: Long): DirectoryEntity? =
         npJdbc.query(
             """
-                select * from directory
-                where id = :id;
+            select * from directory
+            where id = :id;
             """.trimIndent(),
             mapOf(
-                "id" to id
+                "id" to id,
             ),
-            ROW_MAPPER
+            ROW_MAPPER,
         ).firstOrNull()
 
     override fun save(entity: DirectoryEntity): DirectoryEntity =
         npJdbc.queryForObject(
             """
-                insert into directory
-                (created_at, updated_at, community_id, name, parent_directory_id, pos)
-                values
-                (:created_at, :updated_at, :community_id, :name, :parent_directory_id, :pos)
-                returning *;
+            insert into directory
+            (created_at, updated_at, community_id, name, parent_directory_id, pos)
+            values
+            (:created_at, :updated_at, :community_id, :name, :parent_directory_id, :pos)
+            returning *;
             """.trimIndent(),
             mapOf(
                 "created_at" to entity.createdAt,
@@ -52,20 +52,20 @@ class DirectoryEntityRepositoryImpl(
                 "community_id" to entity.communityId,
                 "name" to entity.name,
                 "parent_directory_id" to entity.parentDirectoryId,
-                "pos" to entity.pos
+                "pos" to entity.pos,
             ),
-            ROW_MAPPER
+            ROW_MAPPER,
         )!!
 
     override fun findAllByCommunityId(communityId: Long): List<DirectoryEntity> =
         npJdbc.query(
             """
-                select * from directory
-                where community_id = :community_id;
+            select * from directory
+            where community_id = :community_id;
             """.trimIndent(),
             mapOf(
-                "community_id" to communityId
+                "community_id" to communityId,
             ),
-            ROW_MAPPER
+            ROW_MAPPER,
         )
 }

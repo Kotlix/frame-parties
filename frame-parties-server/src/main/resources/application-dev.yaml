@@ -2,14 +2,13 @@ spring:
   liquibase:
     enabled: true
   datasource:
-    url: 'jdbc:postgresql://localhost:5432/'
+    url: 'jdbc:postgresql://84.54.59.23:5432/parties'
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
-
   cloud:
     openfeign:
       client:
         config:
-          frame-auth-client:
-            url: http://localhost:8080
+          frame-voice-client:
+            url: http://localhost:8083
