@@ -47,6 +47,17 @@ subprojects {
             mavenBom("org.springframework.boot:spring-boot-dependencies:$springBootVersion")
             mavenBom("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
         }
+
+        dependencies {
+            val springDocVersion: String by project
+            dependency("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocVersion")
+
+            val frameVoiceVersion: String by project
+            dependency("ru.kotlix:frame-voice-client-starter:$frameVoiceVersion")
+
+            val frameAuthVersion: String by project
+            dependency("ru.kotlix:frame-auth-client-starter:$frameAuthVersion")
+        }
     }
 
     repositories {
@@ -54,6 +65,7 @@ subprojects {
         mavenCentral()
 
         kotlix("frame-auth")
+        kotlix("frame-voice")
     }
 
     publishing {

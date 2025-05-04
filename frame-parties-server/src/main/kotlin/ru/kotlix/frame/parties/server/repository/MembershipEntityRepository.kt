@@ -8,4 +8,8 @@ interface MembershipEntityRepository {
     fun save(entity: MembershipEntity): MembershipEntity
 
     fun findAllByUserId(userId: Long): List<MembershipEntity>
+
+    fun findAllByCommunityId(communityId: Long): List<MembershipEntity>
+
+    fun remove(entity: MembershipEntity)
 }

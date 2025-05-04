@@ -7,5 +7,7 @@ interface InvitationTokenEntityRepository {
 
     fun save(entity: InvitationTokenEntity): InvitationTokenEntity
 
+    fun incrementUseCount(entity: InvitationTokenEntity)
+
     fun findByToken(token: String): InvitationTokenEntity?
 }

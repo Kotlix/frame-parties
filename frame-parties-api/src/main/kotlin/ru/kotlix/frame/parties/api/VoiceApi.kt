@@ -6,28 +6,41 @@ import ru.kotlix.frame.parties.api.dto.requests.CreateVoiceRequest
 import ru.kotlix.frame.parties.api.dto.requests.UpdateVoiceRequest
 
 interface VoiceApi {
-    fun getAllVoices(communityId: Long): List<VoiceDto>
+    fun getAllVoices(
+        initiatorId: Long,
+        communityId: Long,
+    ): List<VoiceDto>
 
-    fun getVoiceById(id: Long): VoiceDto
+    fun getVoiceById(
+        initiatorId: Long,
+        id: Long,
+    ): VoiceDto
 
     fun createVoice(
+        initiatorId: Long,
         communityId: Long,
         request: CreateVoiceRequest,
     ): VoiceDto
 
     fun updateVoice(
+        initiatorId: Long,
         id: Long,
         request: UpdateVoiceRequest,
     ): VoiceDto
 
-    fun deleteVoice(id: Long)
+    fun deleteVoice(
+        initiatorId: Long,
+        id: Long,
+    )
 
     fun joinVoice(
+        initiatorId: Long,
         id: Long,
         userId: Long,
     ): ConnectionGuide
 
     fun leaveVoice(
+        initiatorId: Long,
         id: Long,
         userId: Long,
     )
