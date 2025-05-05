@@ -1,10 +1,11 @@
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
 dependencies {
     api(project(":frame-parties-api"))
 
     implementation("ru.kotlix:frame-voice-client-starter")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui")
     implementation("org.springframework:spring-context-support")
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -16,4 +17,16 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
 
     implementation("org.postgresql:postgresql")
+}
+
+tasks.getByName<BootJar>("bootJar") {
+    enabled = true
+}
+
+tasks.getByName<Jar>("jar") {
+    enabled = false
+}
+
+tasks.withType<PublishToMavenRepository> {
+    enabled = false
 }
