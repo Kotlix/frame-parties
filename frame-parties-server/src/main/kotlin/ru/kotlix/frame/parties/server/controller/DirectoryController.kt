@@ -9,54 +9,54 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import ru.kotlix.frame.parties.api.RoleApi
-import ru.kotlix.frame.parties.api.dto.entities.RoleDto
-import ru.kotlix.frame.parties.api.dto.requests.CreateRoleRequest
-import ru.kotlix.frame.parties.api.dto.requests.UpdateRoleRequest
+import ru.kotlix.frame.parties.api.DirectoryApi
+import ru.kotlix.frame.parties.api.dto.entities.DirectoryDto
+import ru.kotlix.frame.parties.api.dto.requests.CreateDirectoryRequest
+import ru.kotlix.frame.parties.api.dto.requests.UpdateDirectoryRequest
 import ru.kotlix.frame.parties.server.exception.todoex
 import ru.kotlix.frame.parties.server.exception.todoex1
 
 @RestController
 @RequestMapping("/api/v1")
-class RoleController() : RoleApi {
-    @GetMapping("/community/{communityId}/role")
-    override fun getAllRoles(
+class DirectoryController() : DirectoryApi {
+    @GetMapping("/community/{communityId}/directory")
+    override fun getAllDirectories(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
         @PathVariable("communityId")
         communityId: Long,
-    ): List<RoleDto> = todoex()
+    ): List<DirectoryDto> = todoex()
 
-    @PostMapping("/community/{communityId}/role")
-    override fun createRole(
+    @GetMapping("/directory/{id}")
+    override fun getDirectoryById(
+        @RequestHeader("Initiator-Id")
+        initiatorId: Long,
+        @PathVariable("id")
+        id: Long,
+    ): DirectoryDto = todoex()
+
+    @PostMapping("/community/{communityId}/directory")
+    override fun createDirectory(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
         @PathVariable("communityId")
         communityId: Long,
         @RequestBody
-        request: CreateRoleRequest,
-    ): RoleDto = todoex()
+        request: CreateDirectoryRequest,
+    ): DirectoryDto = todoex()
 
-    @GetMapping("/role/{id}")
-    override fun getRole(
-        @RequestHeader("Initiator-Id")
-        initiatorId: Long,
-        @PathVariable("id")
-        id: Long,
-    ): RoleDto = todoex()
-
-    @PutMapping("/role/{id}")
-    override fun updateRole(
+    @PutMapping("/directory/{id}")
+    override fun updateDirectory(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
         @PathVariable("id")
         id: Long,
         @RequestBody
-        request: UpdateRoleRequest,
-    ): RoleDto = todoex()
+        request: UpdateDirectoryRequest,
+    ): DirectoryDto = todoex()
 
-    @DeleteMapping("/role/{id}")
-    override fun deleteRole(
+    @DeleteMapping("/directory/{id}")
+    override fun deleteDirectory(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
         @PathVariable("id")

@@ -1,5 +1,6 @@
-package ru.kotlix.frame.parties.server.controller
+package ru.kotlix.frame.parties.client
 
+import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -7,25 +8,20 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
 import ru.kotlix.frame.parties.api.RoleApi
 import ru.kotlix.frame.parties.api.dto.entities.RoleDto
 import ru.kotlix.frame.parties.api.dto.requests.CreateRoleRequest
 import ru.kotlix.frame.parties.api.dto.requests.UpdateRoleRequest
-import ru.kotlix.frame.parties.server.exception.todoex
-import ru.kotlix.frame.parties.server.exception.todoex1
 
-@RestController
-@RequestMapping("/api/v1")
-class RoleController() : RoleApi {
+@FeignClient(name = "frame-parties-role-client", path = "/api/v1")
+interface PartiesRoleClient : RoleApi {
     @GetMapping("/community/{communityId}/role")
     override fun getAllRoles(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
         @PathVariable("communityId")
         communityId: Long,
-    ): List<RoleDto> = todoex()
+    ): List<RoleDto>
 
     @PostMapping("/community/{communityId}/role")
     override fun createRole(
@@ -35,7 +31,7 @@ class RoleController() : RoleApi {
         communityId: Long,
         @RequestBody
         request: CreateRoleRequest,
-    ): RoleDto = todoex()
+    ): RoleDto
 
     @GetMapping("/role/{id}")
     override fun getRole(
@@ -43,7 +39,7 @@ class RoleController() : RoleApi {
         initiatorId: Long,
         @PathVariable("id")
         id: Long,
-    ): RoleDto = todoex()
+    ): RoleDto
 
     @PutMapping("/role/{id}")
     override fun updateRole(
@@ -53,7 +49,7 @@ class RoleController() : RoleApi {
         id: Long,
         @RequestBody
         request: UpdateRoleRequest,
-    ): RoleDto = todoex()
+    ): RoleDto
 
     @DeleteMapping("/role/{id}")
     override fun deleteRole(
@@ -61,5 +57,5 @@ class RoleController() : RoleApi {
         initiatorId: Long,
         @PathVariable("id")
         id: Long,
-    ) = todoex1()
+    )
 }
