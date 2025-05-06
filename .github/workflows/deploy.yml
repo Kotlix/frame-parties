@@ -21,6 +21,10 @@ on:
         required: true
         type: string
         default: 'frame-parties'
+      voice_svc_url:
+        description: 'Frame-voice k8s url'
+        required: true
+        type: string
       svc_port:
         description: 'K8S service port'
         required: true
@@ -44,6 +48,8 @@ env:
   KTX_SVC_PORT: ${{ inputs.svc_port }}
   KTX_IMAGE_NAME: ${{ inputs.image_name }}
   KTX_IMAGE_VERSION: ${{ inputs.image_version }}
+  # Siblings
+  KTX_VOICE_SVC_URL: ${{ inputs.voice_svc_url }}
 
 jobs:
   deploy:
@@ -66,6 +72,9 @@ jobs:
 
       - name: Build with Gradle
         if: ${{ inputs.build_image }}
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ./gradlew build
           mv $KTX_JAR_PATH ./docker/app.jar
