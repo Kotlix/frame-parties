@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
-import org.springframework.web.bind.annotation.RequestParam
 import ru.kotlix.frame.parties.api.VoiceApi
 import ru.kotlix.frame.parties.api.dto.entities.ConnectionGuide
 import ru.kotlix.frame.parties.api.dto.entities.VoiceDto
@@ -61,23 +60,19 @@ interface PartiesVoiceClient : VoiceApi {
         id: Long,
     )
 
-    @PostMapping("/voice-join")
+    @PostMapping("/voice/{id}/join")
     override fun joinVoice(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
-        @RequestParam
+        @PathVariable("id")
         id: Long,
-        @RequestParam
-        userId: Long,
     ): ConnectionGuide
 
-    @PostMapping("/voice-leave")
+    @PostMapping("/voice/{id}/leave")
     override fun leaveVoice(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
-        @RequestParam
+        @PathVariable("id")
         id: Long,
-        @RequestParam
-        userId: Long,
     )
 }

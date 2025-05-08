@@ -24,7 +24,7 @@ interface PartiesCommunityClient : CommunityApi {
     override fun getById(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
-        @PathVariable
+        @PathVariable("communityId")
         communityId: Long,
     ): CommunityDto
 
@@ -40,7 +40,7 @@ interface PartiesCommunityClient : CommunityApi {
     override fun update(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
-        @PathVariable
+        @PathVariable("communityId")
         communityId: Long,
         @RequestBody
         request: UpdateCommunityRequest,
@@ -50,7 +50,7 @@ interface PartiesCommunityClient : CommunityApi {
     override fun delete(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
-        @PathVariable
+        @PathVariable("communityId")
         communityId: Long,
     )
 
@@ -58,12 +58,12 @@ interface PartiesCommunityClient : CommunityApi {
     override fun findAllPublicWithFilter(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
-        @RequestParam(required = false)
+        @RequestParam("q", required = false)
         name: String?,
-        @RequestParam
-        pageOffset: Long,
-        @RequestParam
-        pageCount: Long,
+        @RequestParam("page")
+        page: Long,
+        @RequestParam("size")
+        size: Long,
     ): List<CommunityDto>
 
     @GetMapping("/my-communities")
@@ -72,35 +72,35 @@ interface PartiesCommunityClient : CommunityApi {
         initiatorId: Long,
     ): List<CommunityDto>
 
-    @GetMapping("/community-members/{communityId}")
+    @GetMapping("/community/{communityId}/members")
     override fun getMembers(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
-        @PathVariable
+        @PathVariable("communityId")
         communityId: Long,
     ): List<MemberDto>
 
-    @PostMapping("/community-join")
+    @PostMapping("/community/{communityId}/join")
     override fun joinCommunity(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
-        @RequestParam
+        @PathVariable("communityId")
         communityId: Long,
     )
 
-    @PostMapping("/community-leave")
+    @PostMapping("/community/{communityId}/leave")
     override fun leaveCommunity(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
-        @RequestParam
+        @PathVariable("communityId")
         communityId: Long,
     )
 
-    @PostMapping("/community-token/{communityId}")
+    @PostMapping("/community/{communityId}/token")
     override fun createInviteToken(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
-        @PathVariable
+        @PathVariable("communityId")
         communityId: Long,
         @RequestBody
         request: CreateTokenRequest,

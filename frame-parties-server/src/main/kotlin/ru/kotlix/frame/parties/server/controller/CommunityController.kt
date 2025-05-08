@@ -32,7 +32,7 @@ class CommunityController(
     override fun getById(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
-        @PathVariable
+        @PathVariable("communityId")
         communityId: Long,
     ): CommunityDto =
         communityService.getById(
@@ -60,7 +60,7 @@ class CommunityController(
     override fun update(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
-        @PathVariable
+        @PathVariable("communityId")
         communityId: Long,
         @RequestBody
         request: UpdateCommunityRequest,
@@ -79,7 +79,7 @@ class CommunityController(
     override fun delete(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
-        @PathVariable
+        @PathVariable("communityId")
         communityId: Long,
     ) = communityService.delete(initiatorId, communityId)
 
@@ -87,18 +87,18 @@ class CommunityController(
     override fun findAllPublicWithFilter(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
-        @RequestParam(required = false)
+        @RequestParam("q", required = false)
         name: String?,
-        @RequestParam
-        pageOffset: Long,
-        @RequestParam
-        pageCount: Long,
+        @RequestParam("page")
+        page: Long,
+        @RequestParam("size")
+        size: Long,
     ): List<CommunityDto> =
         communityService.findAllPublicWithFilter(
             initiatorId,
             name,
-            pageOffset,
-            pageCount,
+            page,
+            size,
         ).map { it.toCommunityDto() }
 
     @GetMapping("/my-communities")
@@ -110,11 +110,11 @@ class CommunityController(
             initiatorId,
         ).map { it.toCommunityDto() }
 
-    @GetMapping("/community-members/{communityId}")
+    @GetMapping("/community/{communityId}/members")
     override fun getMembers(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
-        @PathVariable
+        @PathVariable("communityId")
         communityId: Long,
     ): List<MemberDto> =
         communityService.getMembers(
@@ -122,33 +122,33 @@ class CommunityController(
             communityId,
         ).map { it.toMembershipDto() }
 
-    @PostMapping("/community-join")
+    @PostMapping("/community/{communityId}/join")
     override fun joinCommunity(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
-        @RequestParam
+        @PathVariable("communityId")
         communityId: Long,
     ) = communityService.joinCommunity(
         initiatorId,
         communityId,
     )
 
-    @PostMapping("/community-leave")
+    @PostMapping("/community/{communityId}/leave")
     override fun leaveCommunity(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
-        @RequestParam
+        @PathVariable("communityId")
         communityId: Long,
     ) = communityService.leaveCommunity(
         initiatorId,
         communityId,
     )
 
-    @PostMapping("/community-token/{communityId}")
+    @PostMapping("/community/{communityId}/token")
     override fun createInviteToken(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
-        @PathVariable
+        @PathVariable("communityId")
         communityId: Long,
         @RequestBody
         request: CreateTokenRequest,

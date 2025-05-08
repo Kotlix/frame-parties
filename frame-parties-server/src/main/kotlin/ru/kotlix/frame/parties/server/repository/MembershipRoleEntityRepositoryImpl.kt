@@ -73,6 +73,18 @@ class MembershipRoleEntityRepositoryImpl(
         )
     }
 
+    override fun removeAllByRoleId(roleId: Long) {
+        npJdbc.update(
+            """
+            delete from membership_role
+                where role_id = :role_id;
+            """.trimIndent(),
+            mapOf(
+                "role_id" to roleId,
+            ),
+        )
+    }
+
     override fun removeAllByMembershipId(membershipId: Long) {
         npJdbc.update(
             """

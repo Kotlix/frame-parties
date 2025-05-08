@@ -6,14 +6,13 @@ import ru.kotlix.frame.parties.server.exception.NotFoundException
 import ru.kotlix.frame.parties.server.exception.OperationDeniedException
 import ru.kotlix.frame.parties.server.exception.PermissionDeniedException
 import ru.kotlix.frame.parties.server.repository.CommunityEntityRepository
+import ru.kotlix.frame.parties.server.repository.InvitationTokenEntityRepository
 import ru.kotlix.frame.parties.server.repository.MembershipEntityRepository
 import ru.kotlix.frame.parties.server.repository.MembershipRoleEntityRepository
-import ru.kotlix.frame.parties.server.repository.RoleEntityRepository
 import ru.kotlix.frame.parties.server.repository.dto.CommunityEntity
 import ru.kotlix.frame.parties.server.repository.dto.InvitationTokenEntity
 import ru.kotlix.frame.parties.server.repository.dto.MembershipEntity
 import ru.kotlix.frame.parties.server.repository.dto.MembershipRoleEntity
-import ru.kotlix.frame.parties.server.repository.dto.RoleEntity
 import ru.kotlix.frame.parties.server.service.dto.CommunityPermission
 import ru.kotlix.frame.voice.client.VoiceClient
 import java.time.Duration
@@ -21,46 +20,19 @@ import java.time.OffsetDateTime
 
 @Service
 class CommunityServiceImpl(
-    private val voiceClient: VoiceClient,
-    private val roleService: RoleService,
     private val communityEntityRepository: CommunityEntityRepository,
     private val membershipEntityRepository: MembershipEntityRepository,
-    private val roleEntityRepository: RoleEntityRepository,
     private val membershipRoleEntityRepository: MembershipRoleEntityRepository,
+    private val tokenEntityRepository: InvitationTokenEntityRepository,
+    private val roleService: RoleService,
     private val tokenService: TokenService,
+    private val voiceClient: VoiceClient,
 ) : CommunityService {
-    companion object {
-        val communityCreationCooldown = Duration.ofMinutes(5)
+    private val communityCreationCooldown = Duration.ofMinutes(5)
 
-        val defaultUserRoleName = "default"
-        val defaultUserRoleRights =
-            RoleEntity.Rights(
-                serverDelete = false,
-                serverEdit = false,
-                serverEditRoles = false,
-                serverEditElements = false,
-                serverAssignRoles = false,
-                serverCreateInvite = false,
-                chatSendMessages = true,
-                voiceJoin = true,
-            )
-
-        val defaultAdminRoleName = "admin"
-        val defaultAdminRoleRights =
-            RoleEntity.Rights(
-                serverDelete = true,
-                serverEdit = true,
-                serverEditRoles = true,
-                serverEditElements = true,
-                serverAssignRoles = true,
-                serverCreateInvite = true,
-                chatSendMessages = true,
-                voiceJoin = true,
-            )
-
-        val communityUpdatePermission = CommunityPermission.SERVER_EDIT
-        val communityDeletePermission = CommunityPermission.SERVER_DELETE
-    }
+    private val communityUpdatePermission = CommunityPermission.SERVER_EDIT
+    private val communityDeletePermission = CommunityPermission.SERVER_DELETE
+    private val communityCreateTokenPermission = CommunityPermission.SERVER_CREATE_INVITE
 
     @Transactional
     override fun getById(
@@ -104,7 +76,7 @@ class CommunityServiceImpl(
 
         val now = OffsetDateTime.now()
 
-        val communityEntity =
+        val community =
             communityEntityRepository.save(
                 CommunityEntity(
                     id = null,
@@ -119,59 +91,14 @@ class CommunityServiceImpl(
                     deleted = false,
                 ),
             )
-        val userRoleEntity =
-            roleEntityRepository.save(
-                RoleEntity(
-                    id = null,
-                    createdAt = now,
-                    updatedAt = now,
-                    communityId = communityEntity.id!!,
-                    name = defaultUserRoleName,
-                    priority = 1,
-                    protected = true,
-                    rights = defaultUserRoleRights,
-                ),
-            )
-        val adminRoleEntity =
-            roleEntityRepository.save(
-                RoleEntity(
-                    id = null,
-                    createdAt = now,
-                    updatedAt = now,
-                    communityId = communityEntity.id!!,
-                    name = defaultAdminRoleName,
-                    priority = 100,
-                    protected = true,
-                    rights = defaultAdminRoleRights,
-                ),
-            )
-        val membershipEntity =
-            membershipEntityRepository.save(
-                MembershipEntity(
-                    id = null,
-                    joinedAt = now,
-                    userId = initiatorId,
-                    communityId = communityEntity.id!!,
-                ),
-            )
-        membershipRoleEntityRepository.save(
-            MembershipRoleEntity(
-                id = null,
-                assignedAt = now,
-                membershipId = membershipEntity.id!!,
-                roleId = userRoleEntity.id!!,
-            ),
-        )
-        membershipRoleEntityRepository.save(
-            MembershipRoleEntity(
-                id = null,
-                assignedAt = now,
-                membershipId = membershipEntity.id!!,
-                roleId = adminRoleEntity.id!!,
-            ),
-        )
 
-        return communityEntity
+        val membership = joinCommunity(community, initiatorId)
+        val defaultUserRole = roleService.createDefaultUserRole(community.id!!)
+        val defaultAdminRole = roleService.createDefaultAdminRole(community.id!!)
+        roleService.assignRole(membership, defaultUserRole)
+        roleService.assignRole(membership, defaultAdminRole)
+
+        return community
     }
 
     @Transactional
@@ -192,7 +119,7 @@ class CommunityServiceImpl(
             membershipEntityRepository.findAllByUserId(initiatorId)
                 .find { it.communityId == communityEntity.id }
                 ?: if (communityEntity.isPublic) {
-                    throw PermissionDeniedException(initiatorId, communityUpdatePermission)
+                    throw OperationDeniedException("Only members can update community.")
                 } else {
                     throw NotFoundException.CommunityById(communityId)
                 }
@@ -223,7 +150,7 @@ class CommunityServiceImpl(
             membershipEntityRepository.findAllByUserId(initiatorId)
                 .find { it.communityId == communityEntity.id }
                 ?: if (communityEntity.isPublic) {
-                    throw PermissionDeniedException(initiatorId, communityDeletePermission)
+                    throw OperationDeniedException("Only members can delete community.")
                 } else {
                     throw NotFoundException.CommunityById(communityId)
                 }
@@ -261,7 +188,7 @@ class CommunityServiceImpl(
         membershipEntityRepository.findAllByUserId(initiatorId)
             .find { it.communityId == communityEntity.id }
             ?: if (communityEntity.isPublic) {
-                throw PermissionDeniedException("Only members can see members.")
+                throw OperationDeniedException("Only members can see members.")
             } else {
                 throw NotFoundException.CommunityById(communityId)
             }
@@ -288,11 +215,8 @@ class CommunityServiceImpl(
 
         val now = OffsetDateTime.now()
         val userRole =
-            roleEntityRepository.findAllByCommunityId(communityId).find { it.name == defaultUserRoleName }
-                ?: throw RuntimeException(
-                    "Community id=$communityId does not contain " +
-                        "protected default user role named '$defaultUserRoleName'.",
-                )
+            roleService.findDefaultUserRole(communityId)
+                ?: throw RuntimeException("Community id=$communityId does not contain default user role.")
 
         val membershipEntity =
             membershipEntityRepository.save(
@@ -312,11 +236,6 @@ class CommunityServiceImpl(
             ),
         )
     }
-
-    override fun joinCommunityByInviteToken(
-        initiatorId: Long,
-        token: String,
-    ) = tokenService.useToken(initiatorId, token)
 
     @Transactional
     override fun leaveCommunity(
@@ -346,10 +265,94 @@ class CommunityServiceImpl(
         // TODO: notify users about leave
     }
 
+    @Transactional
+    override fun joinCommunityByInviteToken(
+        initiatorId: Long,
+        token: String,
+    ) {
+        val tokenEntity =
+            tokenEntityRepository.findByToken(token)
+                ?: throw NotFoundException.Token(token)
+        if (Duration.between(OffsetDateTime.now(), tokenEntity.expiresAt).isNegative) {
+            throw OperationDeniedException("Token expired.")
+        }
+        if (tokenEntity.isOneTime && tokenEntity.useCount != 0) {
+            throw OperationDeniedException("Token already used.")
+        }
+        val communityId = tokenEntity.communityId
+
+        val community =
+            communityEntityRepository.findById(communityId)
+                ?: throw RuntimeException("Token found but targeting community id=$communityId not found.")
+
+        membershipEntityRepository.findAllByUserId(initiatorId)
+            .find { it.communityId == community.id }
+            ?.let { throw OperationDeniedException("Attempt to rejoin community.") }
+
+        val defaultUserRole =
+            roleService.findDefaultUserRole(communityId)
+                ?: throw RuntimeException("Community id=$communityId does not contain default user role.")
+
+        val membership = joinCommunity(community, initiatorId)
+        roleService.assignRole(membership, defaultUserRole)
+
+        tokenEntityRepository.incrementUseCount(tokenEntity)
+
+        // TODO: notify users about leave
+    }
+
+    @Transactional
     override fun createInviteToken(
         initiatorId: Long,
         communityId: Long,
         expiresAt: OffsetDateTime?,
         isOneTime: Boolean,
-    ): InvitationTokenEntity = tokenService.generateToken(initiatorId, communityId, isOneTime, expiresAt)
+    ): InvitationTokenEntity {
+        val communityEntity =
+            communityEntityRepository.findById(communityId)
+                ?: throw NotFoundException.CommunityById(communityId)
+
+        val membershipEntity =
+            membershipEntityRepository.findAllByUserId(initiatorId)
+                .find { it.communityId == communityEntity.id }
+                ?: if (communityEntity.isPublic) {
+                    throw OperationDeniedException("Only members can create invitation tokens.")
+                } else {
+                    throw NotFoundException.CommunityById(communityId)
+                }
+
+        if (!roleService.hasRight(membershipEntity.id!!, communityCreateTokenPermission)) {
+            throw PermissionDeniedException(initiatorId, communityCreateTokenPermission)
+        }
+
+        val token = tokenService.generateToken()
+
+        val invitationTokenEntity =
+            tokenEntityRepository.save(
+                InvitationTokenEntity(
+                    id = null,
+                    createdAt = OffsetDateTime.now(),
+                    createdBy = initiatorId,
+                    token = token,
+                    communityId = communityEntity.id!!,
+                    isOneTime = isOneTime,
+                    useCount = 0,
+                    expiresAt = expiresAt,
+                ),
+            )
+        return invitationTokenEntity
+    }
+
+    private fun joinCommunity(
+        communityEntity: CommunityEntity,
+        userId: Long,
+    ): MembershipEntity =
+        membershipEntityRepository.save(
+            MembershipEntity(
+                id = null,
+                joinedAt = OffsetDateTime.now(),
+                userId = userId,
+                communityId = communityEntity.id!!,
+            ),
+        )
 }

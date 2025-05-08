@@ -14,4 +14,4 @@ spring:
       client:
         config:
           frame-voice-client:
-            url: ${KTX_VOICE_SVC_URL}
+            url: http://frame-voice:8080

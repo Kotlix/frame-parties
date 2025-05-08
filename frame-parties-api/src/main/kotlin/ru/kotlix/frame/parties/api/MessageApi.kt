@@ -1,7 +1,6 @@
 package ru.kotlix.frame.parties.api
 
 import ru.kotlix.frame.parties.api.dto.entities.MessageDto
-import ru.kotlix.frame.parties.api.dto.requests.FindMessagesRequest
 import ru.kotlix.frame.parties.api.dto.requests.SendMessageRequest
 
 interface MessageApi {
@@ -14,7 +13,8 @@ interface MessageApi {
     fun getMessages(
         initiatorId: Long,
         chatId: Long,
-        request: FindMessagesRequest,
+        page: Long,
+        size: Long,
     ): List<MessageDto>
 
     fun getById(

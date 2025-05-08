@@ -33,8 +33,8 @@ interface CommunityApi {
     fun findAllPublicWithFilter(
         initiatorId: Long,
         name: String?,
-        pageOffset: Long,
-        pageCount: Long,
+        page: Long,
+        size: Long,
     ): List<CommunityDto>
 
     fun findAllByUserId(initiatorId: Long): List<CommunityDto>

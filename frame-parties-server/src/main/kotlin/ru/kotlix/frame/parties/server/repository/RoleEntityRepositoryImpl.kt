@@ -23,17 +23,18 @@ class RoleEntityRepositoryImpl(
                 name = rs.getString("name"),
                 priority = rs.getInt("priority"),
                 protected = rs.getBoolean("protected"),
-                rights = readRights(rs.getObject("rights", PGobject::class.java)),
+                permissionSet = readRights(rs.getObject("rights", PGobject::class.java)),
             )
         }
 
-    private fun writeRights(obj: RoleEntity.Rights): PGobject =
+    private fun writeRights(obj: RoleEntity.PermissionSet): PGobject =
         PGobject().apply {
             type = "json"
             value = objectMapper.writeValueAsString(obj)
         }
 
-    private fun readRights(obj: PGobject): RoleEntity.Rights = objectMapper.readValue(obj.value, RoleEntity.Rights::class.java)
+    private fun readRights(obj: PGobject): RoleEntity.PermissionSet =
+        objectMapper.readValue(obj.value, RoleEntity.PermissionSet::class.java)
 
     override fun findById(id: Long): RoleEntity? =
         npJdbc.query(
@@ -61,7 +62,43 @@ class RoleEntityRepositoryImpl(
                 "name" to entity.name,
                 "priority" to entity.priority,
                 "protected" to entity.protected,
-                "rights" to writeRights(entity.rights),
+                "rights" to writeRights(entity.permissionSet),
+            ),
+            rowMapper,
+        )!!
+
+    override fun remove(entity: RoleEntity) {
+        npJdbc.update(
+            """
+            delete from role
+                where id = :id;
+            """.trimIndent(),
+            mapOf(
+                "id" to entity.id!!,
+            ),
+        )
+    }
+
+    override fun update(entity: RoleEntity): RoleEntity =
+        npJdbc.queryForObject(
+            """
+            update role
+            set updated_at = :updated_at,
+                community_id = :community_id,
+                name = :name,
+                priority = :priority,
+                protected = :protected,
+                rights = :rights
+            where id = :id
+            returning *;
+            """.trimIndent(),
+            mapOf(
+                "updated_at" to entity.updatedAt,
+                "community_id" to entity.communityId,
+                "name" to entity.name,
+                "priority" to entity.priority,
+                "protected" to entity.protected,
+                "rights" to writeRights(entity.permissionSet),
             ),
             rowMapper,
         )!!
