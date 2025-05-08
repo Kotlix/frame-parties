@@ -11,6 +11,9 @@ open class NotFoundException(source: String) : RuntimeException("$source not fou
     class Token(token: String) :
         NotFoundException("Token=$token")
 
+    class RoleById(id: Long) :
+        NotFoundException("Community by id=$id")
+
     class ServerByRegionAndName(region: String, name: String) :
         NotFoundException("Server by region=$region and name=$name")
 }

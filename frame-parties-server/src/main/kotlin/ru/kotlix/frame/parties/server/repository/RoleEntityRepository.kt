@@ -7,6 +7,10 @@ interface RoleEntityRepository {
 
     fun save(entity: RoleEntity): RoleEntity
 
+    fun remove(entity: RoleEntity)
+
+    fun update(entity: RoleEntity): RoleEntity
+
     fun findAllByCommunityId(communityId: Long): List<RoleEntity>
 
     fun findAllByMembershipId(membershipId: Long): List<RoleEntity>

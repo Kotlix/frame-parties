@@ -36,12 +36,10 @@ interface VoiceApi {
     fun joinVoice(
         initiatorId: Long,
         id: Long,
-        userId: Long,
     ): ConnectionGuide
 
     fun leaveVoice(
         initiatorId: Long,
         id: Long,
-        userId: Long,
     )
 }

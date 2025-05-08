@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
+import org.springframework.web.bind.annotation.RequestParam
 import ru.kotlix.frame.parties.api.MessageApi
 import ru.kotlix.frame.parties.api.dto.entities.MessageDto
-import ru.kotlix.frame.parties.api.dto.requests.FindMessagesRequest
 import ru.kotlix.frame.parties.api.dto.requests.SendMessageRequest
 
 @FeignClient(name = "frame-parties-message-client", path = "/api/v1")
@@ -29,8 +29,10 @@ interface PartiesMessageClient : MessageApi {
         initiatorId: Long,
         @PathVariable("chatId")
         chatId: Long,
-        @RequestBody
-        request: FindMessagesRequest,
+        @RequestParam("page")
+        page: Long,
+        @RequestParam("size")
+        size: Long,
     ): List<MessageDto>
 
     @GetMapping("/chat-message/{id}")

@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import ru.kotlix.frame.parties.api.MessageApi
 import ru.kotlix.frame.parties.api.dto.entities.MessageDto
-import ru.kotlix.frame.parties.api.dto.requests.FindMessagesRequest
 import ru.kotlix.frame.parties.api.dto.requests.SendMessageRequest
 import ru.kotlix.frame.parties.server.exception.todoex
 
@@ -32,8 +32,10 @@ class MessageController() : MessageApi {
         initiatorId: Long,
         @PathVariable("chatId")
         chatId: Long,
-        @RequestBody
-        request: FindMessagesRequest,
+        @RequestParam("page")
+        page: Long,
+        @RequestParam("size")
+        size: Long,
     ): List<MessageDto> = todoex()
 
     @GetMapping("/chat-message/{id}")

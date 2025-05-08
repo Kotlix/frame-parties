@@ -11,5 +11,7 @@ interface MembershipRoleEntityRepository {
 
     fun remove(entity: MembershipRoleEntity)
 
+    fun removeAllByRoleId(roleId: Long)
+
     fun removeAllByMembershipId(membershipId: Long)
 }

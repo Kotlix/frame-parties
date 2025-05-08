@@ -10,9 +10,9 @@ data class RoleEntity(
     var name: String,
     var priority: Int,
     var protected: Boolean,
-    var rights: Rights,
+    var permissionSet: PermissionSet,
 ) {
-    data class Rights(
+    data class PermissionSet(
         val serverDelete: Boolean?,
         val serverEdit: Boolean?,
         val serverEditRoles: Boolean?,
