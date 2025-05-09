@@ -19,4 +19,7 @@ open class NotFoundException(source: String) : RuntimeException("$source not fou
 
     class DirectoryById(id: Long) :
         NotFoundException("Directory by id=$id")
+
+    class ChatById(id: Long) :
+        NotFoundException("Chat by id=$id")
 }

@@ -13,19 +13,21 @@ import ru.kotlix.frame.parties.api.ChatApi
 import ru.kotlix.frame.parties.api.dto.entities.ChatDto
 import ru.kotlix.frame.parties.api.dto.requests.CreateChatRequest
 import ru.kotlix.frame.parties.api.dto.requests.UpdateChatRequest
-import ru.kotlix.frame.parties.server.exception.todoex
-import ru.kotlix.frame.parties.server.exception.todoex1
+import ru.kotlix.frame.parties.server.mapper.toChatDto
+import ru.kotlix.frame.parties.server.service.ChatService
 
 @RestController
 @RequestMapping("/api/v1")
-class ChatController() : ChatApi {
+class ChatController(
+    private val chatService: ChatService,
+) : ChatApi {
     @GetMapping("/community/{communityId}/chat")
     override fun getAllChats(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
         @PathVariable("communityId")
         communityId: Long,
-    ): List<ChatDto> = todoex()
+    ): List<ChatDto> = chatService.getAllChats(initiatorId, communityId).map { it.toChatDto() }
 
     @GetMapping("/chat/{id}")
     override fun getChatById(
@@ -33,7 +35,7 @@ class ChatController() : ChatApi {
         initiatorId: Long,
         @PathVariable("id")
         id: Long,
-    ): ChatDto = todoex()
+    ): ChatDto = chatService.getChatById(initiatorId, id).toChatDto()
 
     @PostMapping("/community/{communityId}/chat")
     override fun createChat(
@@ -43,7 +45,14 @@ class ChatController() : ChatApi {
         communityId: Long,
         @RequestBody
         request: CreateChatRequest,
-    ): ChatDto = todoex()
+    ): ChatDto =
+        chatService.createChat(
+            initiatorId,
+            communityId,
+            request.name,
+            request.directoryId,
+            request.order,
+        ).toChatDto()
 
     @PutMapping("/chat/{id}")
     override fun updateChat(
@@ -53,7 +62,14 @@ class ChatController() : ChatApi {
         id: Long,
         @RequestBody
         request: UpdateChatRequest,
-    ): ChatDto = todoex()
+    ): ChatDto =
+        chatService.updateChat(
+            initiatorId,
+            id,
+            request.name,
+            request.directoryId,
+            request.order,
+        ).toChatDto()
 
     @DeleteMapping("/chat/{id}")
     override fun deleteChat(
@@ -61,5 +77,5 @@ class ChatController() : ChatApi {
         initiatorId: Long,
         @PathVariable("id")
         id: Long,
-    ) = todoex1()
+    ) = chatService.deleteChat(initiatorId, id)
 }
