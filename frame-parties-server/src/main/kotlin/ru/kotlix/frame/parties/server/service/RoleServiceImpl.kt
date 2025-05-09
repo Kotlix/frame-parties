@@ -47,7 +47,7 @@ class RoleServiceImpl(
             serverAssignRoles = true,
             serverCreateInvite = true,
             chatSendMessages = true,
-            voiceJoin = true,
+            voiceJoin = true
         )
     private val blockPrioritiesOutOfDefaults = true
 
@@ -421,7 +421,7 @@ class RoleServiceImpl(
             serverAssignRoles = rights[CommunityPermission.SERVER_ASSIGN_ROLES.toString()],
             serverCreateInvite = rights[CommunityPermission.SERVER_CREATE_INVITE.toString()],
             chatSendMessages = rights[CommunityPermission.CHAT_SEND_MESSAGES.toString()],
-            voiceJoin = rights[CommunityPermission.VOICE_JOIN.toString()],
+            voiceJoin = rights[CommunityPermission.VOICE_JOIN.toString()]
         )
 
     override fun getPriority(membershipId: Long): Int {

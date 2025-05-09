@@ -3,6 +3,7 @@ package ru.kotlix.frame.parties.server.repository
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
+import ru.kotlix.frame.parties.server.repository.dto.CommunityEntity
 import ru.kotlix.frame.parties.server.repository.dto.DirectoryEntity
 import java.time.OffsetDateTime
 
@@ -68,4 +69,26 @@ class DirectoryEntityRepositoryImpl(
             ),
             ROW_MAPPER,
         )
+
+    override fun update(entity: DirectoryEntity): DirectoryEntity =
+        npJdbc.queryForObject(
+            """
+            update directory
+            set updated_at = :updated_at,
+                name = :name,
+                parent_directory_id = :parent_directory_id,
+                pos = :pos,
+                community_id = :community_id
+            where id = :id
+            returning *;
+            """.trimIndent(),
+            mapOf(
+                "updated_at" to entity.updatedAt,
+                "community_id" to entity.communityId,
+                "name" to entity.name,
+                "parent_directory_id" to entity.parentDirectoryId,
+                "pos" to entity.pos,
+            ),
+            ROW_MAPPER,
+        )!!
 }

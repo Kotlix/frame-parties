@@ -1,39 +1,33 @@
 package ru.kotlix.frame.parties.server.controller
 
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestHeader
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import ru.kotlix.frame.parties.api.DirectoryApi
 import ru.kotlix.frame.parties.api.dto.entities.DirectoryDto
 import ru.kotlix.frame.parties.api.dto.requests.CreateDirectoryRequest
 import ru.kotlix.frame.parties.api.dto.requests.UpdateDirectoryRequest
-import ru.kotlix.frame.parties.server.exception.todoex
-import ru.kotlix.frame.parties.server.exception.todoex1
+import ru.kotlix.frame.parties.server.mapper.toDirectoryDto
+import ru.kotlix.frame.parties.server.service.DirectoryService
 
 @RestController
 @RequestMapping("/api/v1")
-class DirectoryController() : DirectoryApi {
+class DirectoryController(
+    val directoryService: DirectoryService
+) : DirectoryApi {
     @GetMapping("/community/{communityId}/directory")
     override fun getAllDirectories(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
         @PathVariable("communityId")
-        communityId: Long,
-    ): List<DirectoryDto> = todoex()
+        communityId: Long
+    ): List<DirectoryDto> = directoryService.getAllDirectories(initiatorId, communityId).map { it.toDirectoryDto() }
 
     @GetMapping("/directory/{id}")
     override fun getDirectoryById(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
         @PathVariable("id")
-        id: Long,
-    ): DirectoryDto = todoex()
+        id: Long
+    ): DirectoryDto = directoryService.getDirectoryById(initiatorId, id).toDirectoryDto()
 
     @PostMapping("/community/{communityId}/directory")
     override fun createDirectory(
@@ -42,8 +36,14 @@ class DirectoryController() : DirectoryApi {
         @PathVariable("communityId")
         communityId: Long,
         @RequestBody
-        request: CreateDirectoryRequest,
-    ): DirectoryDto = todoex()
+        request: CreateDirectoryRequest
+    ): DirectoryDto = directoryService.createDirectory(
+        initiatorId,
+        communityId,
+        request.name,
+        request.directoryId,
+        request.order
+    ).toDirectoryDto()
 
     @PutMapping("/directory/{id}")
     override fun updateDirectory(
@@ -52,14 +52,20 @@ class DirectoryController() : DirectoryApi {
         @PathVariable("id")
         id: Long,
         @RequestBody
-        request: UpdateDirectoryRequest,
-    ): DirectoryDto = todoex()
+        request: UpdateDirectoryRequest
+    ): DirectoryDto = directoryService.updateDirectory(
+        initiatorId,
+        id,
+        request.name,
+        request.directoryId,
+        request.order
+    ).toDirectoryDto()
 
     @DeleteMapping("/directory/{id}")
     override fun deleteDirectory(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
         @PathVariable("id")
-        id: Long,
-    ) = todoex1()
+        id: Long
+    ) = directoryService.deleteDirectory(initiatorId, id)
 }

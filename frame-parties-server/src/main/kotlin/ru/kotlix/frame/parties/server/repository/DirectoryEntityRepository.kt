@@ -8,4 +8,6 @@ interface DirectoryEntityRepository {
     fun save(entity: DirectoryEntity): DirectoryEntity
 
     fun findAllByCommunityId(communityId: Long): List<DirectoryEntity>
+
+    fun update(entity: DirectoryEntity): DirectoryEntity
 }

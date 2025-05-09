@@ -8,5 +8,5 @@ enum class CommunityPermission {
     SERVER_ASSIGN_ROLES,
     SERVER_CREATE_INVITE,
     CHAT_SEND_MESSAGES,
-    VOICE_JOIN,
+    VOICE_JOIN
 }
