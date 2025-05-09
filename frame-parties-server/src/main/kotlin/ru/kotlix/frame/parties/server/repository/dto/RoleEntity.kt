@@ -20,6 +20,6 @@ data class RoleEntity(
         val serverAssignRoles: Boolean?,
         val serverCreateInvite: Boolean?,
         val chatSendMessages: Boolean?,
-        val voiceJoin: Boolean?,
+        val voiceJoin: Boolean?
     )
 }

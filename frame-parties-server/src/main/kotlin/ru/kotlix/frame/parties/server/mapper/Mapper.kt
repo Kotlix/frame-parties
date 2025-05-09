@@ -1,9 +1,11 @@
 package ru.kotlix.frame.parties.server.mapper
 
 import ru.kotlix.frame.parties.api.dto.entities.CommunityDto
+import ru.kotlix.frame.parties.api.dto.entities.DirectoryDto
 import ru.kotlix.frame.parties.api.dto.entities.InviteTokenDto
 import ru.kotlix.frame.parties.api.dto.entities.MemberDto
 import ru.kotlix.frame.parties.server.repository.dto.CommunityEntity
+import ru.kotlix.frame.parties.server.repository.dto.DirectoryEntity
 import ru.kotlix.frame.parties.server.repository.dto.InvitationTokenEntity
 import ru.kotlix.frame.parties.server.repository.dto.MembershipEntity
 
@@ -25,4 +27,13 @@ fun InvitationTokenEntity.toInviteTokenDto() =
         token = token,
         isOneTime = isOneTime,
         expiresAt = expiresAt,
+    )
+
+fun DirectoryEntity.toDirectoryDto() =
+    DirectoryDto(
+        id = id!!,
+        communityId = communityId,
+        name = name,
+        directoryId = parentDirectoryId,
+        order = pos
     )
