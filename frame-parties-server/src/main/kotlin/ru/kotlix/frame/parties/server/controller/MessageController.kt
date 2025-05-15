@@ -11,11 +11,14 @@ import org.springframework.web.bind.annotation.RestController
 import ru.kotlix.frame.parties.api.MessageApi
 import ru.kotlix.frame.parties.api.dto.entities.MessageDto
 import ru.kotlix.frame.parties.api.dto.requests.SendMessageRequest
-import ru.kotlix.frame.parties.server.exception.todoex
+import ru.kotlix.frame.parties.server.mapper.toMessageDto
+import ru.kotlix.frame.parties.server.service.MessageService
 
 @RestController
 @RequestMapping("/api/v1")
-class MessageController() : MessageApi {
+class MessageController(
+    private val messageService: MessageService,
+) : MessageApi {
     @PostMapping("/chat/{chatId}/send")
     override fun sendMessage(
         @RequestHeader("Initiator-Id")
@@ -24,7 +27,7 @@ class MessageController() : MessageApi {
         chatId: Long,
         @RequestBody
         request: SendMessageRequest,
-    ): MessageDto = todoex()
+    ): MessageDto = messageService.sendMessage(initiatorId, chatId, request.message).toMessageDto()
 
     @GetMapping("/chat/{chatId}/all")
     override fun getMessages(
@@ -36,7 +39,7 @@ class MessageController() : MessageApi {
         page: Long,
         @RequestParam("size")
         size: Long,
-    ): List<MessageDto> = todoex()
+    ): List<MessageDto> = messageService.getMessages(initiatorId, chatId, page, size).map { it.toMessageDto() }
 
     @GetMapping("/chat-message/{id}")
     override fun getById(
@@ -44,5 +47,5 @@ class MessageController() : MessageApi {
         initiatorId: Long,
         @PathVariable("id")
         messageId: Long,
-    ): MessageDto = todoex()
+    ): MessageDto = messageService.getMessageById(initiatorId, messageId).toMessageDto()
 }

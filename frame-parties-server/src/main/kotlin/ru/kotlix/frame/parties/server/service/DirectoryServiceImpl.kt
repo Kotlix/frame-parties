@@ -46,11 +46,16 @@ class DirectoryServiceImpl(
         initiatorId: Long,
         directoryId: Long,
     ): DirectoryEntity {
-        val directory = directoryRepository.findById(directoryId)
-            ?: throw NotFoundException.DirectoryById(directoryId)
+        val directory =
+            directoryRepository.findById(directoryId)
+                ?: throw NotFoundException.DirectoryById(directoryId)
 
-        val community = communityEntityRepository.findById(directory.communityId)
-            ?: throw RuntimeException("Directory id=${directory.communityId} exists but its related community id=${directory.communityId} does not.")
+        val community =
+            communityEntityRepository.findById(directory.communityId)
+                ?: throw RuntimeException(
+                    "Directory id=${directory.communityId} exists but its" +
+                        " related community id=${directory.communityId} does not.",
+                )
 
         val isMember =
             membershipEntityRepository.findAllByUserId(initiatorId)

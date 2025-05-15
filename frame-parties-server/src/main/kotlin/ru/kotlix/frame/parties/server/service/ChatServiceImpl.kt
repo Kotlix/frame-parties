@@ -48,8 +48,9 @@ class ChatServiceImpl(
         initiatorId: Long,
         id: Long,
     ): ChatEntity {
-        val chat = chatRepository.findById(id)
-            ?: throw NotFoundException.ChatById(id)
+        val chat =
+            chatRepository.findById(id)
+                ?: throw NotFoundException.ChatById(id)
 
         val community =
             communityRepository.findById(chat.communityId)

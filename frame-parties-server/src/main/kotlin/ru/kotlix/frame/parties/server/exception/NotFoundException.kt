@@ -22,4 +22,7 @@ open class NotFoundException(source: String) : RuntimeException("$source not fou
 
     class ChatById(id: Long) :
         NotFoundException("Chat by id=$id")
+
+    class MessageById(id: Long) :
+        NotFoundException("Message by id=$id")
 }
