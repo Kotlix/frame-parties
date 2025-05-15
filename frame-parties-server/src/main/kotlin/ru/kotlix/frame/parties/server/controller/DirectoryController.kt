@@ -1,6 +1,14 @@
 package ru.kotlix.frame.parties.server.controller
 
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 import ru.kotlix.frame.parties.api.DirectoryApi
 import ru.kotlix.frame.parties.api.dto.entities.DirectoryDto
 import ru.kotlix.frame.parties.api.dto.requests.CreateDirectoryRequest
@@ -11,14 +19,14 @@ import ru.kotlix.frame.parties.server.service.DirectoryService
 @RestController
 @RequestMapping("/api/v1")
 class DirectoryController(
-    val directoryService: DirectoryService
+    val directoryService: DirectoryService,
 ) : DirectoryApi {
     @GetMapping("/community/{communityId}/directory")
     override fun getAllDirectories(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
         @PathVariable("communityId")
-        communityId: Long
+        communityId: Long,
     ): List<DirectoryDto> = directoryService.getAllDirectories(initiatorId, communityId).map { it.toDirectoryDto() }
 
     @GetMapping("/directory/{id}")
@@ -26,7 +34,7 @@ class DirectoryController(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
         @PathVariable("id")
-        id: Long
+        id: Long,
     ): DirectoryDto = directoryService.getDirectoryById(initiatorId, id).toDirectoryDto()
 
     @PostMapping("/community/{communityId}/directory")
@@ -36,14 +44,15 @@ class DirectoryController(
         @PathVariable("communityId")
         communityId: Long,
         @RequestBody
-        request: CreateDirectoryRequest
-    ): DirectoryDto = directoryService.createDirectory(
-        initiatorId,
-        communityId,
-        request.name,
-        request.directoryId,
-        request.order
-    ).toDirectoryDto()
+        request: CreateDirectoryRequest,
+    ): DirectoryDto =
+        directoryService.createDirectory(
+            initiatorId,
+            communityId,
+            request.name,
+            request.directoryId,
+            request.order,
+        ).toDirectoryDto()
 
     @PutMapping("/directory/{id}")
     override fun updateDirectory(
@@ -52,20 +61,21 @@ class DirectoryController(
         @PathVariable("id")
         id: Long,
         @RequestBody
-        request: UpdateDirectoryRequest
-    ): DirectoryDto = directoryService.updateDirectory(
-        initiatorId,
-        id,
-        request.name,
-        request.directoryId,
-        request.order
-    ).toDirectoryDto()
+        request: UpdateDirectoryRequest,
+    ): DirectoryDto =
+        directoryService.updateDirectory(
+            initiatorId,
+            id,
+            request.name,
+            request.directoryId,
+            request.order,
+        ).toDirectoryDto()
 
     @DeleteMapping("/directory/{id}")
     override fun deleteDirectory(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
         @PathVariable("id")
-        id: Long
+        id: Long,
     ) = directoryService.deleteDirectory(initiatorId, id)
 }

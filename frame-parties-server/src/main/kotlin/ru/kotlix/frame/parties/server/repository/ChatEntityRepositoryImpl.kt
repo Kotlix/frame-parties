@@ -64,4 +64,34 @@ class ChatEntityRepositoryImpl(
             mapOf("community_id" to communityId),
             ROW_MAPPER,
         )
+
+    override fun update(entity: ChatEntity): ChatEntity =
+        npJdbc.queryForObject(
+            """
+            update chat
+            set updated_at = :updated_at,
+                name = :name,
+                parent_directory_id = :parent_directory_id,
+                pos = :pos
+            where id = :id
+            returning *;
+            """.trimIndent(),
+            mapOf(
+                "updated_at" to entity.updatedAt,
+                "name" to entity.name,
+                "parent_directory_id" to entity.parentDirectoryId,
+                "pos" to entity.pos,
+            ),
+            ROW_MAPPER,
+        )!!
+
+    override fun delete(entity: ChatEntity) {
+        npJdbc.update(
+            """
+            delete from chat
+            where id = :id;
+            """.trimIndent(),
+            mapOf("id" to entity.id),
+        )
+    }
 }

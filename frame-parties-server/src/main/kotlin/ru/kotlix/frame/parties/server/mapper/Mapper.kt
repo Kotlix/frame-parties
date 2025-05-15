@@ -1,9 +1,11 @@
 package ru.kotlix.frame.parties.server.mapper
 
+import ru.kotlix.frame.parties.api.dto.entities.ChatDto
 import ru.kotlix.frame.parties.api.dto.entities.CommunityDto
 import ru.kotlix.frame.parties.api.dto.entities.DirectoryDto
 import ru.kotlix.frame.parties.api.dto.entities.InviteTokenDto
 import ru.kotlix.frame.parties.api.dto.entities.MemberDto
+import ru.kotlix.frame.parties.server.repository.dto.ChatEntity
 import ru.kotlix.frame.parties.server.repository.dto.CommunityEntity
 import ru.kotlix.frame.parties.server.repository.dto.DirectoryEntity
 import ru.kotlix.frame.parties.server.repository.dto.InvitationTokenEntity
@@ -35,5 +37,14 @@ fun DirectoryEntity.toDirectoryDto() =
         communityId = communityId,
         name = name,
         directoryId = parentDirectoryId,
-        order = pos
+        order = pos,
+    )
+
+fun ChatEntity.toChatDto() =
+    ChatDto(
+        id = id!!,
+        communityId = communityId,
+        name = name,
+        directoryId = parentDirectoryId,
+        order = pos,
     )

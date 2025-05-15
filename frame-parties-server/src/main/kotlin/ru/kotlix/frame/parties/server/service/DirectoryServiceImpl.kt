@@ -2,7 +2,7 @@ package ru.kotlix.frame.parties.server.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import ru.kotlix.frame.parties.server.exception.DictionaryCreationException
+import ru.kotlix.frame.parties.server.exception.DirectoryCreationException
 import ru.kotlix.frame.parties.server.exception.NotFoundException
 import ru.kotlix.frame.parties.server.exception.OperationDeniedException
 import ru.kotlix.frame.parties.server.exception.PermissionDeniedException
@@ -18,15 +18,17 @@ class DirectoryServiceImpl(
     val directoryRepository: DirectoryEntityRepository,
     val communityEntityRepository: CommunityEntityRepository,
     val membershipEntityRepository: MembershipEntityRepository,
-    private val roleService: RoleService
-    ) : DirectoryService {
-
+    private val roleService: RoleService,
+) : DirectoryService {
     private val directoryUpdatePermission = CommunityPermission.SERVER_EDIT_ELEMENTS
     private val directoryCreatePermission = CommunityPermission.SERVER_EDIT_ELEMENTS
     private val directoryDeletePermission = CommunityPermission.SERVER_EDIT_ELEMENTS
 
     @Transactional
-    override fun getAllDirectories(initiatorId: Long, communityId: Long): List<DirectoryEntity> {
+    override fun getAllDirectories(
+        initiatorId: Long,
+        communityId: Long,
+    ): List<DirectoryEntity> {
         val directories = directoryRepository.findAllByCommunityId(communityId)
 
         val isMember =
@@ -40,9 +42,28 @@ class DirectoryServiceImpl(
     }
 
     @Transactional
-    override fun getDirectoryById(initiatorId: Long, directoryId: Long): DirectoryEntity {
-        return directoryRepository.findById(directoryId)
+    override fun getDirectoryById(
+        initiatorId: Long,
+        directoryId: Long,
+    ): DirectoryEntity {
+        val directory = directoryRepository.findById(directoryId)
             ?: throw NotFoundException.DirectoryById(directoryId)
+
+        val community = communityEntityRepository.findById(directory.communityId)
+            ?: throw RuntimeException("Directory id=${directory.communityId} exists but its related community id=${directory.communityId} does not.")
+
+        val isMember =
+            membershipEntityRepository.findAllByUserId(initiatorId)
+                .any { it.communityId == directory.communityId }
+        if (!isMember) {
+            if (community.isPublic) {
+                throw OperationDeniedException("Only members can see community chats.")
+            } else {
+                throw NotFoundException.CommunityById(directory.communityId)
+            }
+        }
+
+        return directory
     }
 
     @Transactional
@@ -51,7 +72,7 @@ class DirectoryServiceImpl(
         communityId: Long,
         name: String,
         parentDirectoryId: Long?,
-        order: Int
+        order: Int,
     ): DirectoryEntity {
         val communityEntity =
             communityEntityRepository.findById(communityId)
@@ -71,7 +92,7 @@ class DirectoryServiceImpl(
         }
 
         if (parentDirectoryId == null) {
-            throw DictionaryCreationException("Directory parent can not be null.")
+            throw DirectoryCreationException("Directory parent can not be null.")
         }
 
         return createDirectory(communityId, name, parentDirectoryId, order)
@@ -83,12 +104,13 @@ class DirectoryServiceImpl(
         id: Long,
         name: String,
         directoryId: Long?,
-        order: Int
+        order: Int,
     ): DirectoryEntity {
         val directory = directoryRepository.findById(id) ?: throw NotFoundException.DirectoryById(id)
 
-        val communityEntity = communityEntityRepository.findById(directory.communityId)
-            ?: throw NotFoundException.CommunityById(directory.communityId)
+        val communityEntity =
+            communityEntityRepository.findById(directory.communityId)
+                ?: throw NotFoundException.CommunityById(directory.communityId)
 
         val membershipEntity =
             membershipEntityRepository.findAllByUserId(initiatorId)
@@ -105,18 +127,22 @@ class DirectoryServiceImpl(
 
         directory.name = name
         directory.parentDirectoryId =
-            directoryId ?: throw DictionaryCreationException("Directory parent can not be null.")
+            directoryId ?: throw DirectoryCreationException("Directory parent can not be null.")
         directory.pos = order
         directory.updatedAt = OffsetDateTime.now()
         return directoryRepository.update(directory)
     }
 
     @Transactional
-    override fun deleteDirectory(initiatorId: Long, id: Long) {
+    override fun deleteDirectory(
+        initiatorId: Long,
+        id: Long,
+    ) {
         val directory = directoryRepository.findById(id) ?: throw NotFoundException.DirectoryById(id)
 
-        val communityEntity = communityEntityRepository.findById(directory.communityId)
-            ?: throw NotFoundException.CommunityById(directory.communityId)
+        val communityEntity =
+            communityEntityRepository.findById(directory.communityId)
+                ?: throw NotFoundException.CommunityById(directory.communityId)
 
         val membershipEntity =
             membershipEntityRepository.findAllByUserId(initiatorId)
@@ -134,16 +160,22 @@ class DirectoryServiceImpl(
         // TODO delete directory
     }
 
-    fun createDirectory(communityId: Long, name: String, parentDirectoryId: Long?, order: Int): DirectoryEntity {
-        val directory = DirectoryEntity(
-            id = null,
-            createdAt = OffsetDateTime.now(),
-            updatedAt = OffsetDateTime.now(),
-            communityId = communityId,
-            name = name,
-            parentDirectoryId = parentDirectoryId,
-            pos = order
-        )
+    fun createDirectory(
+        communityId: Long,
+        name: String,
+        parentDirectoryId: Long?,
+        order: Int,
+    ): DirectoryEntity {
+        val directory =
+            DirectoryEntity(
+                id = null,
+                createdAt = OffsetDateTime.now(),
+                updatedAt = OffsetDateTime.now(),
+                communityId = communityId,
+                name = name,
+                parentDirectoryId = parentDirectoryId,
+                pos = order,
+            )
 
         return directoryRepository.save(directory)
     }

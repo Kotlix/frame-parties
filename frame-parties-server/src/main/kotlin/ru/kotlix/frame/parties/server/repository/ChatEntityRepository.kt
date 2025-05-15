@@ -8,4 +8,8 @@ interface ChatEntityRepository {
     fun save(entity: ChatEntity): ChatEntity
 
     fun findAllByCommunityId(communityId: Long): List<ChatEntity>
+
+    fun update(entity: ChatEntity): ChatEntity
+
+    fun delete(entity: ChatEntity)
 }
