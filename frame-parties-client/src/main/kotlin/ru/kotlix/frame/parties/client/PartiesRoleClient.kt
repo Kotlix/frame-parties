@@ -58,4 +58,24 @@ interface PartiesRoleClient : RoleApi {
         @PathVariable("id")
         id: Long,
     )
+
+    @PutMapping("/role/{id}/assign/{targetId}")
+    override fun assignRole(
+        @RequestHeader("Initiator-Id")
+        initiatorId: Long,
+        @PathVariable("targetId")
+        targetId: Long,
+        @PathVariable("id")
+        id: Long,
+    )
+
+    @PutMapping("/role/{id}/unassign/{targetId}")
+    override fun unassignRole(
+        @RequestHeader("Initiator-Id")
+        initiatorId: Long,
+        @PathVariable("targetId")
+        targetId: Long,
+        @PathVariable("id")
+        id: Long,
+    )
 }

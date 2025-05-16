@@ -23,3 +23,18 @@ data class RoleEntity(
         val voiceJoin: Boolean?,
     )
 }
+
+fun RoleEntity.PermissionSet.toMap(): Map<String, Boolean> {
+    return listOf(
+        "serverDelete" to serverDelete,
+        "serverEdit" to serverEdit,
+        "serverEditRoles" to serverEditRoles,
+        "serverEditElements" to serverEditElements,
+        "serverAssignRoles" to serverAssignRoles,
+        "serverCreateInvite" to serverCreateInvite,
+        "chatSendMessages" to chatSendMessages,
+        "voiceJoin" to voiceJoin,
+    ).mapNotNull { (key, value) ->
+        value?.let { key to it }
+    }.toMap()
+}

@@ -13,19 +13,21 @@ import ru.kotlix.frame.parties.api.RoleApi
 import ru.kotlix.frame.parties.api.dto.entities.RoleDto
 import ru.kotlix.frame.parties.api.dto.requests.CreateRoleRequest
 import ru.kotlix.frame.parties.api.dto.requests.UpdateRoleRequest
-import ru.kotlix.frame.parties.server.exception.todoex
-import ru.kotlix.frame.parties.server.exception.todoex1
+import ru.kotlix.frame.parties.server.mapper.toRoleDto
+import ru.kotlix.frame.parties.server.service.RoleService
 
 @RestController
 @RequestMapping("/api/v1")
-class RoleController() : RoleApi {
+class RoleController(
+    private val roleService: RoleService,
+) : RoleApi {
     @GetMapping("/community/{communityId}/role")
     override fun getAllRoles(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
         @PathVariable("communityId")
         communityId: Long,
-    ): List<RoleDto> = todoex()
+    ): List<RoleDto> = roleService.getAllRoles(initiatorId, communityId).map { it.toRoleDto() }
 
     @PostMapping("/community/{communityId}/role")
     override fun createRole(
@@ -35,7 +37,7 @@ class RoleController() : RoleApi {
         communityId: Long,
         @RequestBody
         request: CreateRoleRequest,
-    ): RoleDto = todoex()
+    ): RoleDto = roleService.createRole(initiatorId, communityId, request.roleName, request.priority, request.rights).toRoleDto()
 
     @GetMapping("/role/{id}")
     override fun getRole(
@@ -43,7 +45,7 @@ class RoleController() : RoleApi {
         initiatorId: Long,
         @PathVariable("id")
         id: Long,
-    ): RoleDto = todoex()
+    ): RoleDto = roleService.getRole(initiatorId, id).toRoleDto()
 
     @PutMapping("/role/{id}")
     override fun updateRole(
@@ -53,7 +55,7 @@ class RoleController() : RoleApi {
         id: Long,
         @RequestBody
         request: UpdateRoleRequest,
-    ): RoleDto = todoex()
+    ): RoleDto = roleService.updateRole(initiatorId, id, request.roleName, request.priority, request.rights).toRoleDto()
 
     @DeleteMapping("/role/{id}")
     override fun deleteRole(
@@ -61,5 +63,25 @@ class RoleController() : RoleApi {
         initiatorId: Long,
         @PathVariable("id")
         id: Long,
-    ) = todoex1()
+    ) = roleService.deleteRole(initiatorId, id)
+
+    @PutMapping("/role/{id}/assign/{targetId}")
+    override fun assignRole(
+        @RequestHeader("Initiator-Id")
+        initiatorId: Long,
+        @PathVariable("targetId")
+        targetId: Long,
+        @PathVariable("id")
+        id: Long,
+    ) = roleService.assignRole(initiatorId, id, targetId)
+
+    @PutMapping("/role/{id}/unassign/{targetId}")
+    override fun unassignRole(
+        @RequestHeader("Initiator-Id")
+        initiatorId: Long,
+        @PathVariable("targetId")
+        targetId: Long,
+        @PathVariable("id")
+        id: Long,
+    ) = roleService.unassignRole(initiatorId, id, targetId)
 }
