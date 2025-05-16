@@ -12,3 +12,13 @@ spring:
         config:
           frame-voice-client:
             url: http://localhost:8083
+  kafka:
+    bootstrap-servers: localhost:9092
+
+parties:
+  kafka:
+    authentication:
+      username: admin
+      password: admin
+    producer:
+      topic: message

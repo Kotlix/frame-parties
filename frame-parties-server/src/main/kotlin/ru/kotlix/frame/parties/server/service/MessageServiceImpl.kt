@@ -4,12 +4,14 @@ import org.springframework.stereotype.Service
 import ru.kotlix.frame.parties.server.exception.NotFoundException
 import ru.kotlix.frame.parties.server.exception.OperationDeniedException
 import ru.kotlix.frame.parties.server.exception.PermissionDeniedException
+import ru.kotlix.frame.parties.server.producer.MessageProducer
 import ru.kotlix.frame.parties.server.repository.ChatEntityRepository
 import ru.kotlix.frame.parties.server.repository.CommunityEntityRepository
 import ru.kotlix.frame.parties.server.repository.MembershipEntityRepository
 import ru.kotlix.frame.parties.server.repository.TextMessageEntityRepository
 import ru.kotlix.frame.parties.server.repository.dto.TextMessageEntity
 import ru.kotlix.frame.parties.server.service.dto.CommunityPermission
+import ru.kotlix.frame.session.api.kafka.MessageNotification
 import java.time.OffsetDateTime
 
 @Service
@@ -19,6 +21,7 @@ class MessageServiceImpl(
     private val communityEntityRepository: CommunityEntityRepository,
     private val membershipRepository: MembershipEntityRepository,
     private val roleService: RoleService,
+    private val messageProducer: MessageProducer,
 ) : MessageService {
     private val chatSendMessagePermission = CommunityPermission.CHAT_SEND_MESSAGES
 
@@ -48,15 +51,27 @@ class MessageServiceImpl(
             throw PermissionDeniedException(initiatorId, chatSendMessagePermission)
         }
 
-        return messageRepository.save(
-            TextMessageEntity(
-                id = null,
-                createdAt = OffsetDateTime.now(),
-                chatId = chatId,
-                userId = initiatorId,
-                message = message,
-            ),
+        val messageEntity =
+            messageRepository.save(
+                TextMessageEntity(
+                    id = null,
+                    createdAt = OffsetDateTime.now(),
+                    chatId = chatId,
+                    userId = initiatorId,
+                    message = message,
+                ),
+            )
+
+        messageProducer.produceMessage(
+            MessageNotification().apply {
+                communityId = community.id!!
+                setChatId(messageEntity.chatId)
+                senderId = messageEntity.userId
+                textContent = messageEntity.message
+            },
         )
+
+        return messageEntity
     }
 
     override fun getMessages(
@@ -73,16 +88,13 @@ class MessageServiceImpl(
             communityEntityRepository.findById(chat.communityId)
                 ?: throw RuntimeException("Chat id=$chatId exists but its related community id=${chat.communityId} does not.")
 
-        // TODO узнать, все ли имеют возможность смотреть сообщения
-
-        val membershipEntity =
-            membershipRepository.findAllByUserId(initiatorId)
-                .find { it.communityId == community.id }
-                ?: if (community.isPublic) {
-                    throw OperationDeniedException("Only members can get messages in this community.")
-                } else {
-                    throw NotFoundException.CommunityById(chat.communityId)
-                }
+        membershipRepository.findAllByUserId(initiatorId)
+            .find { it.communityId == community.id }
+            ?: if (community.isPublic) {
+                throw OperationDeniedException("Only members can get messages in this community.")
+            } else {
+                throw NotFoundException.CommunityById(chat.communityId)
+            }
 
         return messageRepository.findAllByChatId(chatId, page, size)
     }
@@ -103,14 +115,13 @@ class MessageServiceImpl(
             communityEntityRepository.findById(chat.communityId)
                 ?: throw RuntimeException("Chat id=${message.chatId} exists but its related community id=${chat.communityId} does not.")
 
-        val membershipEntity =
-            membershipRepository.findAllByUserId(initiatorId)
-                .find { it.communityId == community.id }
-                ?: if (community.isPublic) {
-                    throw OperationDeniedException("Only members can get message in this community.")
-                } else {
-                    throw NotFoundException.CommunityById(chat.communityId)
-                }
+        membershipRepository.findAllByUserId(initiatorId)
+            .find { it.communityId == community.id }
+            ?: if (community.isPublic) {
+                throw OperationDeniedException("Only members can get message in this community.")
+            } else {
+                throw NotFoundException.CommunityById(chat.communityId)
+            }
 
         return message
     }

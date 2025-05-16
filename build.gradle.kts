@@ -55,8 +55,8 @@ subprojects {
             val frameVoiceVersion: String by project
             dependency("ru.kotlix:frame-voice-client-starter:$frameVoiceVersion")
 
-            val frameAuthVersion: String by project
-            dependency("ru.kotlix:frame-auth-client-starter:$frameAuthVersion")
+            val frameSessionVersion: String by project
+            dependency("ru.kotlix:frame-session-api-kafka:$frameSessionVersion")
         }
     }
 
@@ -65,6 +65,7 @@ subprojects {
         mavenCentral()
 
         kotlix("frame-auth")
+        kotlix("frame-session")
         kotlix("frame-voice")
     }
 
