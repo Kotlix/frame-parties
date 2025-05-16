@@ -6,12 +6,15 @@ import ru.kotlix.frame.parties.api.dto.entities.DirectoryDto
 import ru.kotlix.frame.parties.api.dto.entities.InviteTokenDto
 import ru.kotlix.frame.parties.api.dto.entities.MemberDto
 import ru.kotlix.frame.parties.api.dto.entities.MessageDto
+import ru.kotlix.frame.parties.api.dto.entities.RoleDto
 import ru.kotlix.frame.parties.server.repository.dto.ChatEntity
 import ru.kotlix.frame.parties.server.repository.dto.CommunityEntity
 import ru.kotlix.frame.parties.server.repository.dto.DirectoryEntity
 import ru.kotlix.frame.parties.server.repository.dto.InvitationTokenEntity
 import ru.kotlix.frame.parties.server.repository.dto.MembershipEntity
+import ru.kotlix.frame.parties.server.repository.dto.RoleEntity
 import ru.kotlix.frame.parties.server.repository.dto.TextMessageEntity
+import ru.kotlix.frame.parties.server.service.dto.CommunityPermission
 
 fun CommunityEntity.toCommunityDto() =
     CommunityDto(
@@ -59,3 +62,26 @@ fun TextMessageEntity.toMessageDto() =
         createdAt = createdAt.toLocalDateTime(),
         message = message,
     )
+
+fun RoleEntity.toRoleDto() =
+    RoleDto(
+        id = id!!,
+        communityId = communityId,
+        roleName = name,
+        priority = priority,
+        rights = permissionSet.toMap(),
+    )
+
+fun RoleEntity.PermissionSet.toMap(): Map<String, Boolean> =
+    mapOf(
+        CommunityPermission.SERVER_DELETE to serverDelete,
+        CommunityPermission.SERVER_EDIT to serverEdit,
+        CommunityPermission.SERVER_EDIT_ROLES to serverEditRoles,
+        CommunityPermission.SERVER_EDIT_ELEMENTS to serverEditElements,
+        CommunityPermission.SERVER_ASSIGN_ROLES to serverAssignRoles,
+        CommunityPermission.SERVER_CREATE_INVITE to serverCreateInvite,
+        CommunityPermission.CHAT_SEND_MESSAGES to chatSendMessages,
+        CommunityPermission.VOICE_JOIN to voiceJoin
+    ).filter { kv -> kv.value != null }
+        .mapKeys { kv -> kv.key.toString() }
+        .mapValues { kv -> kv.value!! }

@@ -31,4 +31,16 @@ interface RoleApi {
         initiatorId: Long,
         id: Long,
     )
+
+    fun assignRole(
+        initiatorId: Long,
+        targetId: Long,
+        id: Long,
+    )
+
+    fun unassignRole(
+        initiatorId: Long,
+        targetId: Long,
+        id: Long,
+    )
 }
