@@ -81,7 +81,7 @@ fun RoleEntity.PermissionSet.toMap(): Map<String, Boolean> =
         CommunityPermission.SERVER_ASSIGN_ROLES to serverAssignRoles,
         CommunityPermission.SERVER_CREATE_INVITE to serverCreateInvite,
         CommunityPermission.CHAT_SEND_MESSAGES to chatSendMessages,
-        CommunityPermission.VOICE_JOIN to voiceJoin
+        CommunityPermission.VOICE_JOIN to voiceJoin,
     ).filter { kv -> kv.value != null }
         .mapKeys { kv -> kv.key.toString() }
         .mapValues { kv -> kv.value!! }

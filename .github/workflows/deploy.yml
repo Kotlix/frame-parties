@@ -84,8 +84,12 @@ jobs:
           # k8s prod secrets
           DB_ADDRESS: ${{ secrets.DB_ADDRESS }}
           DB_NAME: ${{ secrets.DB_NAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          KAFKA_ADDRESS: ${{ secrets.KAFKA_ADDRESS }}
+          KAFKA_USER: ${{ secrets.KAFKA_USER }}
+          KAFKA_PASSWORD: ${{ secrets.KAFKA_PASSWORD }}
+          KAFKA_TOPIC: ${{ secrets.KAFKA_TOPIC }}
         run: |
           envsubst < ./k8s/deployment.tpl.yaml > ./k8s/deployment.yaml
           envsubst < ./k8s/service.tpl.yaml > ./k8s/service.yaml

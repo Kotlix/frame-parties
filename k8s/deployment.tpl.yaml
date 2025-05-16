@@ -28,3 +28,11 @@ spec:
               value: ${DB_USER}
             - name: DB_PASSWORD
               value: ${DB_PASSWORD}
+            - name: KAFKA_ADDRESS
+              value: ${KAFKA_ADDRESS}
+            - name: KAFKA_USER
+              value: ${KAFKA_USER}
+            - name: KAFKA_PASSWORD
+              value: ${KAFKA_PASSWORD}
+            - name: KAFKA_TOPIC
+              value: ${KAFKA_TOPIC}
