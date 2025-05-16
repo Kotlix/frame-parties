@@ -5,11 +5,13 @@ import ru.kotlix.frame.parties.api.dto.entities.CommunityDto
 import ru.kotlix.frame.parties.api.dto.entities.DirectoryDto
 import ru.kotlix.frame.parties.api.dto.entities.InviteTokenDto
 import ru.kotlix.frame.parties.api.dto.entities.MemberDto
+import ru.kotlix.frame.parties.api.dto.entities.MessageDto
 import ru.kotlix.frame.parties.server.repository.dto.ChatEntity
 import ru.kotlix.frame.parties.server.repository.dto.CommunityEntity
 import ru.kotlix.frame.parties.server.repository.dto.DirectoryEntity
 import ru.kotlix.frame.parties.server.repository.dto.InvitationTokenEntity
 import ru.kotlix.frame.parties.server.repository.dto.MembershipEntity
+import ru.kotlix.frame.parties.server.repository.dto.TextMessageEntity
 
 fun CommunityEntity.toCommunityDto() =
     CommunityDto(
@@ -47,4 +49,13 @@ fun ChatEntity.toChatDto() =
         name = name,
         directoryId = parentDirectoryId,
         order = pos,
+    )
+
+fun TextMessageEntity.toMessageDto() =
+    MessageDto(
+        id = id!!,
+        chatId = chatId,
+        authorId = userId,
+        createdAt = createdAt.toLocalDateTime(),
+        message = message,
     )

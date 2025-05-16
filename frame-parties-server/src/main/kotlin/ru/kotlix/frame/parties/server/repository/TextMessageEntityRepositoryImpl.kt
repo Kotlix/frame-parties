@@ -51,13 +51,23 @@ class TextMessageEntityRepositoryImpl(
             ROW_MAPPER,
         )!!
 
-    override fun findAllByChatId(chatId: Long): List<TextMessageEntity> =
+    override fun findAllByChatId(
+        chatId: Long,
+        page: Long,
+        size: Long,
+    ): List<TextMessageEntity> =
         npJdbc.query(
             """
-            select * from text_message
-            where chat_id = :chat_id;
+            SELECT * FROM text_message
+            WHERE chat_id = :chat_id
+            ORDER BY created_at DESC
+            LIMIT :limit OFFSET :offset;
             """.trimIndent(),
-            mapOf("chat_id" to chatId),
+            mapOf(
+                "chat_id" to chatId,
+                "limit" to size,
+                "offset" to page * size,
+            ),
             ROW_MAPPER,
         )
 }

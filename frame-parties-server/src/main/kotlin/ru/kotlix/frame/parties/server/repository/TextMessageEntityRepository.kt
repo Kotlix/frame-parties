@@ -7,5 +7,9 @@ interface TextMessageEntityRepository {
 
     fun save(entity: TextMessageEntity): TextMessageEntity
 
-    fun findAllByChatId(chatId: Long): List<TextMessageEntity>
+    fun findAllByChatId(
+        chatId: Long,
+        page: Long,
+        size: Long,
+    ): List<TextMessageEntity>
 }

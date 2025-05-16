@@ -1,8 +1,11 @@
 package ru.kotlix.frame.parties.server
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.runApplication
+import ru.kotlix.frame.parties.server.config.props.Anchor
 
+@ConfigurationPropertiesScan(basePackageClasses = [Anchor::class])
 @SpringBootApplication
 class Application
 
