@@ -117,7 +117,7 @@ class RoleEntityRepositoryImpl(
         npJdbc.query(
             """
             select * from role
-            where id = (
+            where id in (
                 select role_id from membership_role
                 where membership_id = :membership_id
             )
