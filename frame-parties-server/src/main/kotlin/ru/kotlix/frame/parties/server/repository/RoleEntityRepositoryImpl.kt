@@ -99,6 +99,7 @@ class RoleEntityRepositoryImpl(
                 "priority" to entity.priority,
                 "protected" to entity.protected,
                 "rights" to writeRights(entity.permissionSet),
+                "id" to entity.id,
             ),
             rowMapper,
         )!!

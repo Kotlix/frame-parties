@@ -77,6 +77,7 @@ class CommunityEntityRepositoryImpl(
             returning *;
             """.trimIndent(),
             mapOf(
+                "id" to entity.id,
                 "updated_at" to entity.updatedAt,
                 "name" to entity.name,
                 "is_public" to entity.isPublic,
