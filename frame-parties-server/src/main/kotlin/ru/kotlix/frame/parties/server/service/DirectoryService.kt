@@ -33,4 +33,11 @@ interface DirectoryService {
         initiatorId: Long,
         id: Long,
     )
+
+    fun createDirectory(
+        communityId: Long,
+        name: String,
+        parentDirectoryId: Long?,
+        order: Int,
+    ): DirectoryEntity
 }

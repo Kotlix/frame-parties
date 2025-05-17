@@ -165,7 +165,7 @@ class DirectoryServiceImpl(
         // TODO delete directory
     }
 
-    fun createDirectory(
+    override fun createDirectory(
         communityId: Long,
         name: String,
         parentDirectoryId: Long?,

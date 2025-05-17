@@ -33,4 +33,11 @@ interface ChatService {
         initiatorId: Long,
         id: Long,
     )
+
+    fun createChat(
+        communityId: Long,
+        name: String,
+        directoryId: Long,
+        order: Int,
+    ): ChatEntity
 }
