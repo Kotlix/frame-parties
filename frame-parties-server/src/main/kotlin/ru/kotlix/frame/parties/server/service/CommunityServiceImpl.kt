@@ -26,9 +26,13 @@ class CommunityServiceImpl(
     private val tokenEntityRepository: InvitationTokenEntityRepository,
     private val roleService: RoleService,
     private val tokenService: TokenService,
-    private val voiceClient: VoiceClient,
+    private val directoryService: DirectoryService,
+    private val chatService: ChatService,
+    private val voiceClient: VoiceClient
 ) : CommunityService {
     private val communityCreationCooldown = Duration.ofMinutes(5)
+    private val defaultRootDirectoryName = "root"
+    private val defaultChatDirectoryName = "welcome"
 
     private val communityUpdatePermission = CommunityPermission.SERVER_EDIT
     private val communityDeletePermission = CommunityPermission.SERVER_DELETE
@@ -74,30 +78,63 @@ class CommunityServiceImpl(
         voiceClient.getServers()[voiceRegion]?.first { it == voiceName }
             ?: throw NotFoundException.ServerByRegionAndName(voiceRegion, voiceName)
 
-        val now = OffsetDateTime.now()
-
-        val community =
-            communityEntityRepository.save(
-                CommunityEntity(
-                    id = null,
-                    createdAt = now,
-                    updatedAt = now,
-                    name = name,
-                    description = desc,
-                    isPublic = isPublic,
-                    voiceName = voiceName,
-                    voiceRegion = voiceRegion,
-                    creatorId = initiatorId,
-                    deleted = false,
-                ),
-            )
-
+        val community = createCommunity(
+            name,
+            desc,
+            isPublic,
+            voiceName,
+            voiceRegion,
+            initiatorId
+        )
         val membership = joinCommunity(community, initiatorId)
         val defaultUserRole = roleService.createDefaultUserRole(community.id!!)
         val defaultAdminRole = roleService.createDefaultAdminRole(community.id!!)
         roleService.assignRole(membership, defaultUserRole)
         roleService.assignRole(membership, defaultAdminRole)
 
+        return community
+    }
+
+    private fun createCommunity(
+        name: String,
+        desc: String?,
+        isPublic: Boolean,
+        voiceName: String,
+        voiceRegion: String,
+        creatorId: Long
+    ): CommunityEntity {
+        val community =
+            communityEntityRepository.save(
+                CommunityEntity(
+                    id = null,
+                    createdAt = OffsetDateTime.now(),
+                    updatedAt = OffsetDateTime.now(),
+                    name = name,
+                    description = desc,
+                    isPublic = isPublic,
+                    voiceName = voiceName,
+                    voiceRegion = voiceRegion,
+                    creatorId = creatorId,
+                    deleted = false,
+                ),
+            )
+
+        val directory =
+            directoryService.createDirectory(
+                community.id!!,
+                defaultRootDirectoryName,
+                null,
+                0
+            )
+
+        chatService.createChat(
+            community.id!!,
+            defaultChatDirectoryName,
+            directory.id!!,
+            0
+        )
+
+        // TODO: create voice
         return community
     }
 
@@ -174,7 +211,8 @@ class CommunityServiceImpl(
         name?.let { communityEntityRepository.findAllPublicByName(name, pageOffset, pageSize) }
             ?: communityEntityRepository.findAllPublic(pageOffset, pageSize)
 
-    override fun findAllByUserId(userId: Long): List<CommunityEntity> = communityEntityRepository.findAllByUserId(userId)
+    override fun findAllByUserId(userId: Long): List<CommunityEntity> =
+        communityEntityRepository.findAllByUserId(userId)
 
     @Transactional
     override fun getMembers(

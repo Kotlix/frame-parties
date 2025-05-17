@@ -162,7 +162,7 @@ class ChatServiceImpl(
         // TODO: mark for messages for deleted
     }
 
-    private fun createChat(
+    override fun createChat(
         communityId: Long,
         name: String,
         directoryId: Long,
