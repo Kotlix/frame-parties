@@ -28,7 +28,7 @@ class CommunityServiceImpl(
     private val tokenService: TokenService,
     private val directoryService: DirectoryService,
     private val chatService: ChatService,
-    private val voiceClient: VoiceClient
+    private val voiceClient: VoiceClient,
 ) : CommunityService {
     private val communityCreationCooldown = Duration.ofMinutes(5)
     private val defaultRootDirectoryName = "root"
@@ -78,14 +78,15 @@ class CommunityServiceImpl(
         voiceClient.getServers()[voiceRegion]?.first { it == voiceName }
             ?: throw NotFoundException.ServerByRegionAndName(voiceRegion, voiceName)
 
-        val community = createCommunity(
-            name,
-            desc,
-            isPublic,
-            voiceName,
-            voiceRegion,
-            initiatorId
-        )
+        val community =
+            createCommunity(
+                name,
+                desc,
+                isPublic,
+                voiceName,
+                voiceRegion,
+                initiatorId,
+            )
         val membership = joinCommunity(community, initiatorId)
         val defaultUserRole = roleService.createDefaultUserRole(community.id!!)
         val defaultAdminRole = roleService.createDefaultAdminRole(community.id!!)
@@ -101,7 +102,7 @@ class CommunityServiceImpl(
         isPublic: Boolean,
         voiceName: String,
         voiceRegion: String,
-        creatorId: Long
+        creatorId: Long,
     ): CommunityEntity {
         val community =
             communityEntityRepository.save(
@@ -124,14 +125,14 @@ class CommunityServiceImpl(
                 community.id!!,
                 defaultRootDirectoryName,
                 null,
-                0
+                0,
             )
 
         chatService.createChat(
             community.id!!,
             defaultChatDirectoryName,
             directory.id!!,
-            0
+            0,
         )
 
         // TODO: create voice
@@ -211,8 +212,7 @@ class CommunityServiceImpl(
         name?.let { communityEntityRepository.findAllPublicByName(name, pageOffset, pageSize) }
             ?: communityEntityRepository.findAllPublic(pageOffset, pageSize)
 
-    override fun findAllByUserId(userId: Long): List<CommunityEntity> =
-        communityEntityRepository.findAllByUserId(userId)
+    override fun findAllByUserId(userId: Long): List<CommunityEntity> = communityEntityRepository.findAllByUserId(userId)
 
     @Transactional
     override fun getMembers(

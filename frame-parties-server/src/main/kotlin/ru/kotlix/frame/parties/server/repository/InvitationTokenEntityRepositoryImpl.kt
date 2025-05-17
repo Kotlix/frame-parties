@@ -43,7 +43,7 @@ class InvitationTokenEntityRepositoryImpl(
                 set use_count = use_count + 1
             where id = :id;
             """.trimIndent(),
-            mapOf("id" to entity.id!!),
+            mapOf("id" to entity.id),
         )
     }
 

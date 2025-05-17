@@ -87,6 +87,7 @@ class DirectoryEntityRepositoryImpl(
                 "name" to entity.name,
                 "parent_directory_id" to entity.parentDirectoryId,
                 "pos" to entity.pos,
+                "id" to entity.id,
             ),
             ROW_MAPPER,
         )!!
