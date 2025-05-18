@@ -64,4 +64,27 @@ class VoiceEntityRepositoryImpl(
             mapOf("community_id" to communityId),
             ROW_MAPPER,
         )
+
+    override fun update(entity: VoiceEntity): VoiceEntity =
+        npJdbc.queryForObject(
+            """
+            update voice
+            set updated_at = :updated_at,
+                name = :name,
+                parent_directory_id = :parent_directory_id,
+                pos = :pos,
+                community_id = :community_id
+            where id = :id
+            returning *;
+            """.trimIndent(),
+            mapOf(
+                "updated_at" to entity.updatedAt,
+                "community_id" to entity.communityId,
+                "name" to entity.name,
+                "parent_directory_id" to entity.parentDirectoryId,
+                "pos" to entity.pos,
+                "id" to entity.id,
+            ),
+            ROW_MAPPER,
+        )!!
 }

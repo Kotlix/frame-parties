@@ -53,7 +53,7 @@ class DirectoryServiceImpl(
         val community =
             communityEntityRepository.findById(directory.communityId)
                 ?: throw RuntimeException(
-                    "Directory id=${directory.communityId} exists but its" +
+                    "Directory id=${directory.id} exists but its" +
                         " related community id=${directory.communityId} does not.",
                 )
 

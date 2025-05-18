@@ -2,11 +2,13 @@ package ru.kotlix.frame.parties.server.mapper
 
 import ru.kotlix.frame.parties.api.dto.entities.ChatDto
 import ru.kotlix.frame.parties.api.dto.entities.CommunityDto
+import ru.kotlix.frame.parties.api.dto.entities.ConnectionGuide
 import ru.kotlix.frame.parties.api.dto.entities.DirectoryDto
 import ru.kotlix.frame.parties.api.dto.entities.InviteTokenDto
 import ru.kotlix.frame.parties.api.dto.entities.MemberDto
 import ru.kotlix.frame.parties.api.dto.entities.MessageDto
 import ru.kotlix.frame.parties.api.dto.entities.RoleDto
+import ru.kotlix.frame.parties.api.dto.entities.VoiceDto
 import ru.kotlix.frame.parties.server.repository.dto.ChatEntity
 import ru.kotlix.frame.parties.server.repository.dto.CommunityEntity
 import ru.kotlix.frame.parties.server.repository.dto.DirectoryEntity
@@ -14,6 +16,7 @@ import ru.kotlix.frame.parties.server.repository.dto.InvitationTokenEntity
 import ru.kotlix.frame.parties.server.repository.dto.MembershipEntity
 import ru.kotlix.frame.parties.server.repository.dto.RoleEntity
 import ru.kotlix.frame.parties.server.repository.dto.TextMessageEntity
+import ru.kotlix.frame.parties.server.repository.dto.VoiceEntity
 import ru.kotlix.frame.parties.server.service.dto.CommunityPermission
 
 fun CommunityEntity.toCommunityDto() =
@@ -85,3 +88,26 @@ fun RoleEntity.PermissionSet.toMap(): Map<String, Boolean> =
     ).filter { kv -> kv.value != null }
         .mapKeys { kv -> kv.key.toString() }
         .mapValues { kv -> kv.value!! }
+
+fun ConnectionGuide.toStateConnectionGuideDto() =
+    ru.kotlix.frame.voice.api.dto.ConnectionGuide(
+        hostAddress = hostAddress,
+        channelId = channelId,
+        shadowId = shadowId,
+    )
+
+fun ru.kotlix.frame.voice.api.dto.ConnectionGuide.toPartiesConnectionGuideDto() =
+    ConnectionGuide(
+        hostAddress = hostAddress,
+        channelId = channelId,
+        shadowId = shadowId,
+    )
+
+fun VoiceEntity.toVoiceDto() =
+    VoiceDto(
+        id = id!!,
+        communityId = communityId,
+        name = name,
+        directoryId = parentDirectoryId,
+        order = pos,
+    )

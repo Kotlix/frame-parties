@@ -14,19 +14,21 @@ import ru.kotlix.frame.parties.api.dto.entities.ConnectionGuide
 import ru.kotlix.frame.parties.api.dto.entities.VoiceDto
 import ru.kotlix.frame.parties.api.dto.requests.CreateVoiceRequest
 import ru.kotlix.frame.parties.api.dto.requests.UpdateVoiceRequest
-import ru.kotlix.frame.parties.server.exception.todoex
-import ru.kotlix.frame.parties.server.exception.todoex1
+import ru.kotlix.frame.parties.server.mapper.toVoiceDto
+import ru.kotlix.frame.parties.server.service.VoiceService
 
 @RestController
 @RequestMapping("/api/v1")
-class VoiceController() : VoiceApi {
+class VoiceController(
+    val voiceService: VoiceService,
+) : VoiceApi {
     @GetMapping("/community/{communityId}/voice")
     override fun getAllVoices(
         @RequestHeader("Initiator-Id")
         initiatorId: Long,
         @PathVariable("communityId")
         communityId: Long,
-    ): List<VoiceDto> = todoex()
+    ): List<VoiceDto> = voiceService.getAllVoices(initiatorId, communityId).map { it.toVoiceDto() }
 
     @GetMapping("/voice/{id}")
     override fun getVoiceById(
@@ -34,7 +36,7 @@ class VoiceController() : VoiceApi {
         initiatorId: Long,
         @PathVariable("id")
         id: Long,
-    ): VoiceDto = todoex()
+    ): VoiceDto = voiceService.getVoiceById(initiatorId, id).toVoiceDto()
 
     @PostMapping("/community/{communityId}/voice")
     override fun createVoice(
@@ -44,7 +46,7 @@ class VoiceController() : VoiceApi {
         communityId: Long,
         @RequestBody
         request: CreateVoiceRequest,
-    ): VoiceDto = todoex()
+    ): VoiceDto = voiceService.createVoice(initiatorId, communityId, request.name, request.directoryId, request.order).toVoiceDto()
 
     @PutMapping("/voice/{id}")
     override fun updateVoice(
@@ -54,7 +56,7 @@ class VoiceController() : VoiceApi {
         id: Long,
         @RequestBody
         request: UpdateVoiceRequest,
-    ): VoiceDto = todoex()
+    ): VoiceDto = voiceService.updateVoice(initiatorId, id, request.name, request.directoryId, request.order).toVoiceDto()
 
     @DeleteMapping("/voice/{id}")
     override fun deleteVoice(
@@ -62,7 +64,7 @@ class VoiceController() : VoiceApi {
         initiatorId: Long,
         @PathVariable("id")
         id: Long,
-    ) = todoex1()
+    ) = voiceService.deleteVoice(initiatorId, id)
 
     @PostMapping("/voice/{id}/join")
     override fun joinVoice(
@@ -70,7 +72,7 @@ class VoiceController() : VoiceApi {
         initiatorId: Long,
         @PathVariable("id")
         id: Long,
-    ): ConnectionGuide = todoex()
+    ): ConnectionGuide = voiceService.joinVoice(initiatorId, id)
 
     @PostMapping("/voice/{id}/leave")
     override fun leaveVoice(
@@ -78,5 +80,5 @@ class VoiceController() : VoiceApi {
         initiatorId: Long,
         @PathVariable("id")
         id: Long,
-    ) = todoex1()
+    ) = voiceService.leaveVoice(initiatorId, id)
 }
