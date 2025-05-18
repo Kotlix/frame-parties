@@ -44,4 +44,11 @@ interface VoiceService {
         initiatorId: Long,
         id: Long,
     )
+
+    fun createVoice(
+        communityId: Long,
+        name: String,
+        directoryId: Long,
+        order: Int,
+    ): VoiceEntity
 }

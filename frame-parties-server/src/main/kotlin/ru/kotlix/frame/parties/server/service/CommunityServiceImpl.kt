@@ -28,11 +28,13 @@ class CommunityServiceImpl(
     private val tokenService: TokenService,
     private val directoryService: DirectoryService,
     private val chatService: ChatService,
+    private val voiceService: VoiceService,
     private val voiceClient: VoiceClient,
 ) : CommunityService {
     private val communityCreationCooldown = Duration.ofMinutes(5)
     private val defaultRootDirectoryName = "root"
-    private val defaultChatDirectoryName = "welcome"
+    private val defaultRootChatName = "welcome"
+    private val defaultRootVoiceName = "talk-room"
 
     private val communityUpdatePermission = CommunityPermission.SERVER_EDIT
     private val communityDeletePermission = CommunityPermission.SERVER_DELETE
@@ -120,7 +122,7 @@ class CommunityServiceImpl(
                 ),
             )
 
-        val directory =
+        val directoryRoot =
             directoryService.createDirectory(
                 community.id!!,
                 defaultRootDirectoryName,
@@ -130,12 +132,18 @@ class CommunityServiceImpl(
 
         chatService.createChat(
             community.id!!,
-            defaultChatDirectoryName,
-            directory.id!!,
+            defaultRootChatName,
+            directoryRoot.id!!,
             0,
         )
 
-        // TODO: create voice
+        voiceService.createVoice(
+            community.id!!,
+            defaultRootVoiceName,
+            directoryRoot.id!!,
+            1,
+        )
+
         return community
     }
 
