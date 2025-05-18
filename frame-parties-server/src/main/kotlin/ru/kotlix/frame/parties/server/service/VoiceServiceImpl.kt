@@ -2,6 +2,7 @@ package ru.kotlix.frame.parties.server.service
 
 import feign.FeignException
 import org.springframework.http.HttpStatus
+import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
 import ru.kotlix.frame.parties.api.dto.entities.ConnectionGuide
 import ru.kotlix.frame.parties.server.exception.NotFoundException
@@ -18,6 +19,7 @@ import ru.kotlix.frame.voice.api.dto.LeaveRequest
 import ru.kotlix.frame.voice.client.VoiceClient
 import java.time.OffsetDateTime
 
+@Service
 class VoiceServiceImpl(
     val communityEntityRepository: CommunityEntityRepository,
     val membershipEntityRepository: MembershipEntityRepository,
