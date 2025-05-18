@@ -8,4 +8,6 @@ interface VoiceEntityRepository {
     fun save(entity: VoiceEntity): VoiceEntity
 
     fun findAllByCommunityId(communityId: Long): List<VoiceEntity>
+
+    fun update(entity: VoiceEntity): VoiceEntity
 }
