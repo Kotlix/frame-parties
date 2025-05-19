@@ -177,6 +177,10 @@ class VoiceServiceImpl(
             throw PermissionDeniedException(initiatorId, voiceDeletePermission)
         }
 
+        if (voiceClient.getUsers(voice.id!!).size > 1) {
+            throw OperationDeniedException("Cannot delete voice with other users.")
+        }
+
         // TODO delete voice
     }
 
