@@ -75,4 +75,12 @@ interface PartiesVoiceClient : VoiceApi {
         @PathVariable("id")
         id: Long,
     )
+
+    @GetMapping("/voice/{id}/users")
+    override fun getVoiceUsers(
+        @RequestHeader("Initiator-Id")
+        initiatorId: Long,
+        @PathVariable("id")
+        id: Long,
+    ): List<Long>
 }

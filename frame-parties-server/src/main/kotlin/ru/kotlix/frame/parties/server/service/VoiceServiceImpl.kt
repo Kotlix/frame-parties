@@ -246,6 +246,24 @@ class VoiceServiceImpl(
         }
     }
 
+    override fun getVoiceUsers(
+        initiatorId: Long,
+        id: Long,
+    ): List<Long> {
+        val voice =
+            voiceEntityRepository.findById(id)
+                ?: throw NotFoundException.VoiceById(id)
+
+        try {
+            return voiceClient.getUsers(voice.id!!)
+        } catch (ex: FeignException) {
+            throw ResponseStatusException(
+                HttpStatus.valueOf(ex.status()),
+                ex.contentUTF8() ?: ex.message,
+            )
+        }
+    }
+
     fun createVoice(
         communityId: Long,
         name: String,

@@ -44,4 +44,9 @@ interface VoiceService {
         initiatorId: Long,
         id: Long,
     )
+
+    fun getVoiceUsers(
+        initiatorId: Long,
+        id: Long,
+    ): List<Long>
 }
