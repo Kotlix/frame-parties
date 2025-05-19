@@ -51,4 +51,9 @@ interface VoiceService {
         directoryId: Long,
         order: Int,
     ): VoiceEntity
+
+    fun getVoiceUsers(
+        initiatorId: Long,
+        id: Long,
+    ): List<Long>
 }

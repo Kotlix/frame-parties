@@ -81,4 +81,10 @@ class VoiceController(
         @PathVariable("id")
         id: Long,
     ) = voiceService.leaveVoice(initiatorId, id)
+
+    @GetMapping("/voice/{id}/users")
+    override fun getVoiceUsers(
+        @RequestHeader("Initiator-Id") initiatorId: Long,
+        @PathVariable("id") id: Long,
+    ): List<Long> = voiceService.getVoiceUsers(initiatorId, id)
 }
