@@ -28,7 +28,7 @@ class VoiceEntityRepositoryImpl(
     override fun findById(id: Long): VoiceEntity? =
         npJdbc.query(
             """
-            select * from chat
+            select * from voice
             where id = :id;
             """.trimIndent(),
             mapOf("id" to id),
@@ -38,7 +38,7 @@ class VoiceEntityRepositoryImpl(
     override fun save(entity: VoiceEntity): VoiceEntity =
         npJdbc.queryForObject(
             """
-            insert into chat
+            insert into voice
             (created_at, updated_at, community_id, name, parent_directory_id, pos)
             values
             (:created_at, :updated_at, :community_id, :name, :parent_directory_id, :pos)
@@ -58,7 +58,7 @@ class VoiceEntityRepositoryImpl(
     override fun findAllByCommunityId(communityId: Long): List<VoiceEntity> =
         npJdbc.query(
             """
-            select * from chat
+            select * from voice
             where community_id = :community_id;
             """.trimIndent(),
             mapOf("community_id" to communityId),
