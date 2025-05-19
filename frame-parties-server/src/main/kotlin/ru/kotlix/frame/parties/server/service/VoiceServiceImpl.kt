@@ -264,7 +264,7 @@ class VoiceServiceImpl(
         }
     }
 
-    fun createVoice(
+    override fun createVoice(
         communityId: Long,
         name: String,
         directoryId: Long,
