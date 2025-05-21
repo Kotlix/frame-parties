@@ -78,4 +78,14 @@ interface PartiesRoleClient : RoleApi {
         @PathVariable("id")
         id: Long,
     )
+
+    @GetMapping("/community/{communityId}/user/{targetId}/role")
+    override fun getUserRoles(
+        @RequestHeader("Initiator-Id")
+        initiatorId: Long,
+        @PathVariable("communityId")
+        communityId: Long,
+        @PathVariable("targetId")
+        targetId: Long,
+    ): List<RoleDto>
 }

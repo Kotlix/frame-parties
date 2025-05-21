@@ -43,4 +43,10 @@ interface RoleApi {
         targetId: Long,
         id: Long,
     )
+
+    fun getUserRoles(
+        initiatorId: Long,
+        communityId: Long,
+        targetId: Long,
+    ): List<RoleDto>
 }

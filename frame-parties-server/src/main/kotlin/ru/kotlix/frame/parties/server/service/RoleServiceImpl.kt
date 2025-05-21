@@ -284,11 +284,7 @@ class RoleServiceImpl(
         val targetMembership =
             membershipEntityRepository.findAllByUserId(targetId)
                 .find { it.communityId == communityId }
-                ?: if (community.isPublic) {
-                    throw OperationDeniedException("Roles can be assigned only to members.")
-                } else {
-                    throw NotFoundException.CommunityById(communityId)
-                }
+                ?: throw OperationDeniedException("Roles can be assigned only to members.")
 
         roleEntityRepository.findAllByMembershipId(targetMembership.id!!)
             .find { it.id == role.id!! }
@@ -337,11 +333,7 @@ class RoleServiceImpl(
         val targetMembership =
             membershipEntityRepository.findAllByUserId(targetId)
                 .find { it.communityId == communityId }
-                ?: if (community.isPublic) {
-                    throw OperationDeniedException("Roles can be unassigned only from members.")
-                } else {
-                    throw NotFoundException.CommunityById(communityId)
-                }
+                ?: throw OperationDeniedException("Roles can be unassigned only to members.")
 
         roleEntityRepository.findAllByMembershipId(targetMembership.id!!)
             .find { it.id == role.id!! }
@@ -477,4 +469,30 @@ class RoleServiceImpl(
     override fun findDefaultUserRole(communityId: Long): RoleEntity? =
         roleEntityRepository.findAllByCommunityId(communityId)
             .find { it.protected && (it.name == defaultUserRoleName) }
+
+    override fun getUserRoles(
+        initiatorId: Long,
+        communityId: Long,
+        targetId: Long,
+    ): List<RoleEntity> {
+        val community =
+            communityEntityRepository.findById(communityId)
+                ?: throw NotFoundException.CommunityById(communityId)
+
+        val membership =
+            membershipEntityRepository.findAllByUserId(initiatorId)
+                .find { it.communityId == communityId }
+                ?: if (community.isPublic) {
+                    throw OperationDeniedException("Only members can view roles.")
+                } else {
+                    throw NotFoundException.CommunityById(communityId)
+                }
+
+        val user =
+            membershipEntityRepository.findAllByUserId(targetId)
+                .find { it.communityId == communityId }
+                ?: throw OperationDeniedException("Roles can only be requested from members.")
+
+        return roleEntityRepository.findAllByMembershipId(user.id!!)
+    }
 }
