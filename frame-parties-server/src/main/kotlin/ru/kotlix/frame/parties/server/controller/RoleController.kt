@@ -84,4 +84,14 @@ class RoleController(
         @PathVariable("id")
         id: Long,
     ) = roleService.unassignRole(initiatorId, id, targetId)
+
+    @GetMapping("/community/{communityId}/user/{targetId}/role")
+    override fun getUserRoles(
+        @RequestHeader("Initiator-Id")
+        initiatorId: Long,
+        @PathVariable("communityId")
+        communityId: Long,
+        @PathVariable("targetId")
+        targetId: Long,
+    ) = roleService.getUserRoles(initiatorId, communityId, targetId).map { it.toRoleDto() }
 }

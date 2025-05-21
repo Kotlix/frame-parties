@@ -83,4 +83,10 @@ interface RoleService {
         membership: MembershipEntity,
         role: RoleEntity,
     )
+
+    fun getUserRoles(
+        initiatorId: Long,
+        communityId: Long,
+        targetId: Long,
+    ): List<RoleEntity>
 }

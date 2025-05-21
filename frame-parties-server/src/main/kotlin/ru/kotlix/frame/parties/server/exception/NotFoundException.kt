@@ -28,4 +28,7 @@ open class NotFoundException(source: String) : RuntimeException("$source not fou
 
     class VoiceById(id: Long) :
         NotFoundException("Voice by id=$id")
+
+    class MembershipById(id: Long) :
+        NotFoundException("Membership by id=$id")
 }
