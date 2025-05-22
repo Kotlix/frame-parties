@@ -89,16 +89,10 @@ fun RoleEntity.PermissionSet.toMap(): Map<String, Boolean> =
         .mapKeys { kv -> kv.key.toString() }
         .mapValues { kv -> kv.value!! }
 
-fun ConnectionGuide.toStateConnectionGuideDto() =
-    ru.kotlix.frame.voice.api.dto.ConnectionGuide(
-        hostAddress = hostAddress,
-        channelId = channelId,
-        shadowId = shadowId,
-    )
-
 fun ru.kotlix.frame.voice.api.dto.ConnectionGuide.toPartiesConnectionGuideDto() =
     ConnectionGuide(
         hostAddress = hostAddress,
+        secret = secret,
         channelId = channelId,
         shadowId = shadowId,
     )
