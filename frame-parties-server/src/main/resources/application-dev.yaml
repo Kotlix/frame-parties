@@ -36,3 +36,8 @@ management:
 logging:
   level:
     org.zalando.logbook: TRACE
+logbook:
+  exclude:
+    - '**/swagger-ui.html'
+    - '**/v3/api-docs'
+    - '**/actuator/**'
