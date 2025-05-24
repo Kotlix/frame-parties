@@ -31,9 +31,6 @@ subprojects {
         plugin("maven-publish")
     }
 
-    val springBootVersion: String by project
-    val springCloudVersion: String by project
-
     val groupId: String by project
     val versionIdNumber: String by project
     val versionIdStatus: String by project
@@ -44,8 +41,14 @@ subprojects {
 
     dependencyManagement {
         imports {
+            val springBootVersion: String by project
             mavenBom("org.springframework.boot:spring-boot-dependencies:$springBootVersion")
+
+            val springCloudVersion: String by project
             mavenBom("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
+
+            val logBookVersion: String by project
+            mavenBom("org.zalando:logbook-bom:$logBookVersion")
         }
 
         dependencies {

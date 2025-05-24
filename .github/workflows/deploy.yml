@@ -103,8 +103,6 @@ jobs:
         run: |
           eval $(minikube docker-env)
           docker build -t $KTX_IMAGE_NAME:$KTX_IMAGE_VERSION ./docker
-          
-          docker images | grep "$KTX_IMAGE_NAME" | grep -v "$KTX_IMAGE_VERSION" | awk '{print $3}' | xargs docker rmi -f || true
 
       - name: Deploy to k8s
         run: |
@@ -117,6 +115,12 @@ jobs:
           
           minikube kubectl -- apply -f ./k8s/deployment.yaml
           minikube kubectl -- apply -f ./k8s/service.yaml
+
+      - name: Remove old Docker images
+        if: ${{ inputs.build_new || (!inputs.build_new && !inputs.update_existing) }}
+        run: |
+          eval $(minikube docker-env)
+          docker images | grep "$KTX_IMAGE_NAME" | grep -v "$KTX_IMAGE_VERSION" | awk '{print $3}' | xargs docker rmi || true
 
       - name: Clean up workspace
         if: always()

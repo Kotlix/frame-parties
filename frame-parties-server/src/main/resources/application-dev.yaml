@@ -35,8 +35,4 @@ management:
 
 logging:
   level:
-    org:
-      springframework:
-        web:
-          filter:
-            CommonsRequestLoggingFilter: DEBUG
+    org.zalando.logbook: TRACE

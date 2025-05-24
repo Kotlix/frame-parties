@@ -52,8 +52,9 @@ spec:
             httpGet:
               path: /actuator/health
               port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
             failureThreshold: 30
-            periodSeconds: 10
       volumes:
         - name: config-volume
           configMap:

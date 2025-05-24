@@ -7,6 +7,9 @@ dependencies {
     implementation("ru.kotlix:frame-session-api-kafka")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.zalando:logbook-spring-boot-starter")
+    implementation("org.liquibase:liquibase-core")
+
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui")
     implementation("org.springframework:spring-context-support")
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -14,7 +17,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.kafka:spring-kafka")
-    implementation("org.liquibase:liquibase-core")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
