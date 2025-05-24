@@ -44,3 +44,4 @@ bin/
 
 ### Custom ###
 .kotlin
+/frame-parties-server/src/main/resources/application-dev-own.yaml

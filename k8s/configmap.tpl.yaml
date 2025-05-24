@@ -31,3 +31,21 @@ data:
           password: ${KAFKA_PASSWORD}
         producer:
           topic: ${KAFKA_TOPIC}
+    
+    management:
+      endpoint:
+        health:
+          show-details: always
+      endpoints:
+        web:
+          exposure:
+            include:
+              - health
+    
+    logging:
+      level:
+        org:
+          springframework:
+            web:
+              filter:
+                CommonsRequestLoggingFilter: DEBUG
